@@ -166,8 +166,8 @@ export default function Index() {
             </div>
             <div className="md:w-1/2 flex justify-center">
               <img 
-                src="/taxi-illustration.svg" 
-                alt="GoCabs ride-hailing" 
+                src="/lovable-uploads/bcde0d9b-3b24-48f1-badc-5bcbe2d0e87b.png" 
+                alt="GoCabs ride-hailing illustration" 
                 className="w-full max-w-lg animate-fadeIn stagger-item"
               />
             </div>
@@ -309,7 +309,7 @@ export default function Index() {
               </div>
             </div>
             <div className="flex justify-center">
-              <img src="/taxi-illustration.svg" alt="Mobile app" className="max-w-xs w-full" />
+              <img src="/lovable-uploads/bcde0d9b-3b24-48f1-badc-5bcbe2d0e87b.png" alt="Mobile app" className="max-w-xs w-full" />
             </div>
           </div>
         </div>
