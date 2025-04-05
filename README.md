@@ -1,73 +1,107 @@
-# Welcome to your Lovable project
 
-## Project info
+# GoCabs - Modern Ride-Hailing Platform
 
-**URL**: https://lovable.dev/projects/9d69b04e-b5cd-4116-91d8-95d0d7778303
+GoCabs is a modern ride-hailing platform with premium features for both riders and drivers. This project includes a complete frontend and backend implementation with all the essential features of a ride-hailing service.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+- User authentication (riders, drivers, admins)
+- Ride booking and scheduling
+- Multi-stop rides
+- Fare negotiation
+- Favorite drivers and routes
+- Ride mood settings (silent ride, music preference)
+- Carbon footprint tracking
+- Weather & traffic-aware pricing
+- Subscription passes
+- Real-time tracking with Socket.io
+- Driver-rider chat
+- Emergency features
+- Admin panel for management
+- Responsive design with light/dark mode
 
-**Use Lovable**
+## Tech Stack
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/9d69b04e-b5cd-4116-91d8-95d0d7778303) and start prompting.
+- **Frontend**: React, TypeScript, Tailwind CSS, Shadcn UI
+- **Backend**: Node.js, Express.js
+- **Database**: MySQL
+- **Real-time**: Socket.io
+- **Maps**: Google Maps API integration
+- **Authentication**: JWT
 
-Changes made via Lovable will be committed automatically to this repo.
+## Getting Started
 
-**Use your preferred IDE**
+### Prerequisites
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- Node.js (v14 or later)
+- MySQL (v8 or later)
+- npm or yarn
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Installation
 
-Follow these steps:
+1. Clone the repository:
+   ```
+   git clone https://github.com/yourusername/gocabs.git
+   cd gocabs
+   ```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+2. Set up the database:
+   ```
+   mysql -u root -p < database/schema.sql
+   ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+3. Configure the environment variables:
+   ```
+   cp backend/.env.example backend/.env
+   ```
+   Edit the `.env` file with your database credentials and other configuration options.
 
-# Step 3: Install the necessary dependencies.
-npm i
+4. Install dependencies and start the development server:
+   ```
+   # Install backend dependencies
+   cd backend
+   npm install
+   
+   # Start backend server
+   npm run dev
+   
+   # In a new terminal, install frontend dependencies
+   cd ../
+   npm install
+   
+   # Start frontend development server
+   npm run dev
+   ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+5. Access the application:
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:5000
+
+## Project Structure
+
+```
+gocabs/
+├── backend/           # Node.js/Express backend
+├── public/            # Static assets
+├── src/               # React/TypeScript frontend
+├── database/          # Database schema and seed data
+└── README.md          # Project documentation
 ```
 
-**Edit a file directly in GitHub**
+## Contributing
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-**Use GitHub Codespaces**
+## License
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-## What technologies are used for this project?
+## Acknowledgments
 
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/9d69b04e-b5cd-4116-91d8-95d0d7778303) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes it is!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+- Design inspired by modern ride-hailing applications
+- Icons provided by Lucide React
+- UI components from Shadcn UI

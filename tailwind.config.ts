@@ -62,6 +62,12 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				gocabs: {
+					primary: '#00ADB5',
+					secondary: '#222831',
+					accent: '#393E46',
+					light: '#EEEEEE',
 				}
 			},
 			borderRadius: {
@@ -95,12 +101,48 @@ export default {
 						opacity: '1',
 						transform: 'translateY(0)'
 					}
+				},
+				'slideIn': {
+					from: {
+						transform: 'translateX(-100%)'
+					},
+					to: {
+						transform: 'translateX(0)'
+					}
+				},
+				'fadeInScale': {
+					from: {
+						opacity: '0',
+						transform: 'scale(0.95)'
+					},
+					to: {
+						opacity: '1',
+						transform: 'scale(1)'
+					}
+				},
+				'pulse': {
+					'0%, 100%': {
+						opacity: '1'
+					},
+					'50%': {
+						opacity: '0.5'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-				'fadeIn': 'fadeIn 0.5s ease-out'
+				'fadeIn': 'fadeIn 0.5s ease-out',
+				'slideIn': 'slideIn 0.5s ease-out',
+				'fadeInScale': 'fadeInScale 0.3s ease-out',
+				'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+			},
+			fontFamily: {
+				'sans': ['Inter', 'Poppins', 'sans-serif'],
+			},
+			boxShadow: {
+				'soft': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+				'glow': '0 0 15px rgba(0, 173, 181, 0.5)'
 			}
 		}
 	},
