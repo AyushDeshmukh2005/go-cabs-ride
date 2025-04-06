@@ -1,8 +1,7 @@
-
 CREATE DATABASE IF NOT EXISTS gocabs;
 USE gocabs;
 
--- Users table (for all users regardless of role)
+-- Users table
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -15,7 +14,7 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Riders specific information
+-- Riders
 CREATE TABLE IF NOT EXISTS riders (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -26,7 +25,7 @@ CREATE TABLE IF NOT EXISTS riders (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Drivers specific information
+-- Drivers
 CREATE TABLE IF NOT EXISTS drivers (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -46,7 +45,7 @@ CREATE TABLE IF NOT EXISTS drivers (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Admin specific information
+-- Admins
 CREATE TABLE IF NOT EXISTS admin_users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -57,7 +56,7 @@ CREATE TABLE IF NOT EXISTS admin_users (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Favorite drivers for riders
+-- Favorite Drivers
 CREATE TABLE IF NOT EXISTS favorite_drivers (
     id INT AUTO_INCREMENT PRIMARY KEY,
     rider_id INT NOT NULL,
@@ -68,7 +67,7 @@ CREATE TABLE IF NOT EXISTS favorite_drivers (
     UNIQUE KEY (rider_id, driver_id)
 );
 
--- Saved addresses for riders
+-- Saved Addresses
 CREATE TABLE IF NOT EXISTS saved_addresses (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -82,7 +81,7 @@ CREATE TABLE IF NOT EXISTS saved_addresses (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Payment methods
+-- Payment Methods
 CREATE TABLE IF NOT EXISTS payment_methods (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -96,12 +95,12 @@ CREATE TABLE IF NOT EXISTS payment_methods (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Subscription plans
+-- Subscription Plans
 CREATE TABLE IF NOT EXISTS subscription_plans (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description TEXT,
-    duration_days INT NOT NULL,
+    duration_days INT,
     price DECIMAL(10, 2) NOT NULL,
     ride_limit INT,
     discount_percentage DECIMAL(5, 2),
@@ -109,7 +108,7 @@ CREATE TABLE IF NOT EXISTS subscription_plans (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- User subscriptions
+-- User Subscriptions
 CREATE TABLE IF NOT EXISTS user_subscriptions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -124,7 +123,7 @@ CREATE TABLE IF NOT EXISTS user_subscriptions (
     FOREIGN KEY (plan_id) REFERENCES subscription_plans(id)
 );
 
--- Rides table
+-- Rides
 CREATE TABLE IF NOT EXISTS rides (
     id INT AUTO_INCREMENT PRIMARY KEY,
     rider_id INT NOT NULL,
@@ -159,7 +158,7 @@ CREATE TABLE IF NOT EXISTS rides (
     FOREIGN KEY (payment_method_id) REFERENCES payment_methods(id)
 );
 
--- Multi-stop rides
+-- Ride Stops
 CREATE TABLE IF NOT EXISTS ride_stops (
     id INT AUTO_INCREMENT PRIMARY KEY,
     ride_id INT NOT NULL,
@@ -172,7 +171,7 @@ CREATE TABLE IF NOT EXISTS ride_stops (
     FOREIGN KEY (ride_id) REFERENCES rides(id) ON DELETE CASCADE
 );
 
--- Ride tracking points for detailed trip history
+-- Ride Tracking
 CREATE TABLE IF NOT EXISTS ride_tracking (
     id INT AUTO_INCREMENT PRIMARY KEY,
     ride_id INT NOT NULL,
@@ -182,7 +181,7 @@ CREATE TABLE IF NOT EXISTS ride_tracking (
     FOREIGN KEY (ride_id) REFERENCES rides(id) ON DELETE CASCADE
 );
 
--- Fare bidding for negotiation
+-- Fare Bids
 CREATE TABLE IF NOT EXISTS fare_bids (
     id INT AUTO_INCREMENT PRIMARY KEY,
     ride_id INT NOT NULL,
@@ -195,7 +194,7 @@ CREATE TABLE IF NOT EXISTS fare_bids (
     FOREIGN KEY (driver_id) REFERENCES drivers(id)
 );
 
--- Driver achievements/gamification
+-- Driver Achievements
 CREATE TABLE IF NOT EXISTS driver_achievements (
     id INT AUTO_INCREMENT PRIMARY KEY,
     achievement_name VARCHAR(100) NOT NULL,
@@ -205,7 +204,7 @@ CREATE TABLE IF NOT EXISTS driver_achievements (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Driver earned achievements
+-- Earned Achievements
 CREATE TABLE IF NOT EXISTS driver_earned_achievements (
     id INT AUTO_INCREMENT PRIMARY KEY,
     driver_id INT NOT NULL,
@@ -216,7 +215,7 @@ CREATE TABLE IF NOT EXISTS driver_earned_achievements (
     UNIQUE KEY (driver_id, achievement_id)
 );
 
--- Emergency contacts
+-- Emergency Contacts
 CREATE TABLE IF NOT EXISTS emergency_contacts (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -228,7 +227,7 @@ CREATE TABLE IF NOT EXISTS emergency_contacts (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Emergency alerts
+-- Emergency Alerts
 CREATE TABLE IF NOT EXISTS emergency_alerts (
     id INT AUTO_INCREMENT PRIMARY KEY,
     ride_id INT NOT NULL,
@@ -242,11 +241,11 @@ CREATE TABLE IF NOT EXISTS emergency_alerts (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
--- Weather data for dynamic pricing
+-- ✅ FIXED: Weather Data (escaped `condition`)
 CREATE TABLE IF NOT EXISTS weather_data (
     id INT AUTO_INCREMENT PRIMARY KEY,
     city VARCHAR(100) NOT NULL,
-    condition VARCHAR(50) NOT NULL,
+    `condition` VARCHAR(50) NOT NULL,
     temperature DECIMAL(5, 2) NOT NULL,
     precipitation DECIMAL(5, 2),
     wind_speed DECIMAL(5, 2),
@@ -254,7 +253,7 @@ CREATE TABLE IF NOT EXISTS weather_data (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Traffic conditions for dynamic pricing
+-- Traffic Conditions
 CREATE TABLE IF NOT EXISTS traffic_conditions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     area_name VARCHAR(100) NOT NULL,
@@ -266,7 +265,7 @@ CREATE TABLE IF NOT EXISTS traffic_conditions (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Chat messages between riders and drivers
+-- Chat Messages
 CREATE TABLE IF NOT EXISTS chat_messages (
     id INT AUTO_INCREMENT PRIMARY KEY,
     ride_id INT NOT NULL,
@@ -280,7 +279,7 @@ CREATE TABLE IF NOT EXISTS chat_messages (
     FOREIGN KEY (recipient_id) REFERENCES users(id)
 );
 
--- System activity logs
+-- Activity Logs
 CREATE TABLE IF NOT EXISTS activity_logs (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
@@ -294,7 +293,7 @@ CREATE TABLE IF NOT EXISTS activity_logs (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
--- Driver reports (for admin review)
+-- Driver Reports
 CREATE TABLE IF NOT EXISTS driver_reports (
     id INT AUTO_INCREMENT PRIMARY KEY,
     driver_id INT NOT NULL,
@@ -313,7 +312,7 @@ CREATE TABLE IF NOT EXISTS driver_reports (
     FOREIGN KEY (reviewed_by) REFERENCES admin_users(id)
 );
 
--- Create indexes for better performance
+-- Indexes
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_rides_rider_id ON rides(rider_id);
 CREATE INDEX idx_rides_driver_id ON rides(driver_id);
@@ -322,9 +321,7 @@ CREATE INDEX idx_drivers_is_active ON drivers(is_active);
 CREATE INDEX idx_chat_messages_ride_id ON chat_messages(ride_id);
 CREATE INDEX idx_ride_stops_ride_id ON ride_stops(ride_id);
 
--- Sample data inserts
-
--- Insert subscription plans
+-- Sample subscription plans
 INSERT INTO subscription_plans (name, description, duration_days, price, ride_limit, discount_percentage)
 VALUES 
 ('Daily Pass', 'Unlimited rides for 1 day', 1, 9.99, NULL, 15.00),
@@ -332,7 +329,7 @@ VALUES
 ('Monthly Pass', 'Unlimited rides for 30 days', 30, 149.99, NULL, 25.00),
 ('10-Ride Package', '10 rides with no expiration', NULL, 99.99, 10, 10.00);
 
--- Insert driver achievements 
+-- Driver Achievements
 INSERT INTO driver_achievements (achievement_name, description, badge_image, points)
 VALUES 
 ('Early Bird', 'Complete 5 rides before 9 AM', 'early_bird.png', 50),
