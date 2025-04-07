@@ -1,87 +1,89 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 93%;
-    --foreground: 224 24% 16%;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 224 24% 16%;
+    --card-foreground: 0 0% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 224 24% 16%;
+    --popover-foreground: 0 0% 10%;
 
-    --primary: 184 100% 36%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 225 6% 13%;
+    --primary-foreground: 0 0% 98%;
 
-    --secondary: 227 19% 16%;
+    --secondary: 225 6% 25%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 225 9% 25%;
-    --muted-foreground: 240 4% 74%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 8% 46%;
 
-    --accent: 225 9% 25%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 220 14% 96%;
+    --accent-foreground: 0 0% 10%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 184 100% 36%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 224 71.4% 4.1%;
 
     --radius: 0.75rem;
 
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 224 24% 16%;
-    --sidebar-primary: 184 100% 36%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 225 9% 25%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 214.3 31.8% 91.4%;
-    --sidebar-ring: 184 100% 36%;
+    --sidebar-foreground: 0 0% 10%;
+    --sidebar-primary: 225 6% 13%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 220 14% 96%;
+    --sidebar-accent-foreground: 0 0% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 224 71.4% 4.1%;
   }
 
   .dark {
-    --background: 227 19% 16%;
-    --foreground: 0 0% 93%;
+    --background: 0 0% 10%;
+    --foreground: 0 0% 98%;
 
-    --card: 225 9% 25%;
-    --card-foreground: 0 0% 93%;
+    --card: 224 6% 20%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 225 9% 25%;
-    --popover-foreground: 0 0% 93%;
+    --popover: 224 6% 20%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 184 100% 36%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 0 0% 100%;
+    --primary-foreground: 240 5.9% 10%;
 
-    --secondary: 225 9% 25%;
-    --secondary-foreground: 0 0% 93%;
+    --secondary: 240 4% 16%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 225 9% 25%;
-    --muted-foreground: 240 4% 74%;
+    --muted: 240 4% 16%;
+    --muted-foreground: 240 5% 64.9%;
 
-    --accent: 225 9% 25%;
-    --accent-foreground: 0 0% 93%;
+    --accent: 240 4% 16%;
+    --accent-foreground: 0 0% 98%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 93%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 225 9% 25%;
-    --input: 225 9% 25%;
-    --ring: 184 100% 36%;
+    --border: 240 4% 16%;
+    --input: 240 4% 16%;
+    --ring: 240 4.9% 83.9%;
     
-    --sidebar-background: 227 19% 16%;
-    --sidebar-foreground: 0 0% 93%;
-    --sidebar-primary: 184 100% 36%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 225 9% 25%;
-    --sidebar-accent-foreground: 0 0% 93%;
-    --sidebar-border: 225 9% 25%;
-    --sidebar-ring: 184 100% 36%;
+    --sidebar-background: 0 0% 10%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 0 0% 100%;
+    --sidebar-primary-foreground: 240 5.9% 10%;
+    --sidebar-accent: 240 4% 16%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 240 4% 16%;
+    --sidebar-ring: 240 4.9% 83.9%;
   }
 }
 
@@ -96,7 +98,7 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-sans font-medium;
+    @apply font-inter font-bold tracking-tight;
   }
 }
 
@@ -109,7 +111,7 @@
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -118,7 +120,7 @@
 }
 
 .animate-fadeIn {
-  animation: fadeIn 0.5s ease-out forwards;
+  animation: fadeIn 0.6s ease-out forwards;
 }
 
 /* Staggered animations */
@@ -131,32 +133,37 @@
 
 /* Custom utility classes */
 .glass-card {
-  @apply backdrop-blur-md bg-white/80 dark:bg-slate-800/80 border border-gray-200 dark:border-gray-700 shadow-md;
+  @apply backdrop-blur-md bg-white/80 dark:bg-black/30 border border-gray-200 dark:border-gray-800 shadow-md;
 }
 
-.gradient-primary {
-  @apply bg-gradient-to-r from-gocabs-primary to-gocabs-primary/80;
+.finora-card {
+  @apply rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-black/50 shadow-sm hover:shadow-md transition-all duration-300;
 }
 
-.gradient-secondary {
-  @apply bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gocabs-secondary dark:to-gocabs-secondary/80;
+.finora-button {
+  @apply rounded-lg px-4 py-2 text-white bg-black dark:bg-white dark:text-black font-medium shadow-sm hover:shadow-md transition-all duration-300;
 }
 
-/* Animated car on road */
+.finora-input {
+  @apply rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-2 focus:border-black focus:ring-1 focus:ring-black dark:focus:border-white dark:focus:ring-white dark:bg-gray-900/50;
+}
+
+/* Advanced Car Animation */
 .road-container {
   position: relative;
   width: 100%;
-  height: 200px;
+  height: 280px;
   overflow: hidden;
-  background: #333;
+  background: #111;
+  border-radius: 16px;
 }
 
 .road {
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: 60px;
-  background: #555;
+  height: 80px;
+  background: #222;
 }
 
 .road::before {
@@ -173,7 +180,187 @@
     #fff 50px,
     #fff 100px
   );
-  animation: moveRoad 0.5s linear infinite;
+  animation: moveRoad 1s linear infinite;
+}
+
+.stars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70%;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 90px 40px, #fff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 160px 120px, #ddd, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 200px 80px, #fff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 240px 50px, #fff, rgba(0,0,0,0));
+  background-repeat: repeat;
+  background-size: 300px 200px;
+  animation: movingStars 20s linear infinite;
+}
+
+.moon {
+  position: absolute;
+  top: 40px;
+  right: 80px;
+  width: 60px;
+  height: 60px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.8);
+}
+
+.car-animation {
+  position: absolute;
+  bottom: 40px;
+  left: 20%;
+  width: 100px;
+  height: 40px;
+  background: #000;
+  border-radius: 20px 30px 5px 10px;
+  animation: carMove 6s ease-in-out infinite alternate;
+}
+
+.car-animation::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  width: 70px;
+  height: 20px;
+  background: #000;
+  right: 10px;
+  border-radius: 20px 20px 0 0;
+}
+
+.car-lights-front {
+  position: absolute;
+  bottom: 10px;
+  right: 0;
+  width: 12px;
+  height: 6px;
+  background: #fff;
+  border-radius: 3px;
+  box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.7);
+}
+
+.car-lights-back {
+  position: absolute;
+  bottom: 10px;
+  left: 5px;
+  width: 8px;
+  height: 6px;
+  background: #ff3333;
+  border-radius: 3px;
+  box-shadow: 0 0 8px 2px rgba(255, 0, 0, 0.5);
+}
+
+.car-window {
+  position: absolute;
+  top: -18px;
+  right: 25px;
+  width: 30px;
+  height: 15px;
+  background: #333;
+  border-radius: 5px 5px 0 0;
+  border-top: 2px solid #444;
+  border-left: 2px solid #444;
+  border-right: 2px solid #444;
+}
+
+.car-wheel {
+  position: absolute;
+  bottom: -10px;
+  width: 20px;
+  height: 20px;
+  background: #333;
+  border-radius: 50%;
+  border: 3px solid #555;
+  animation: wheelRotate 0.5s linear infinite;
+}
+
+.car-wheel-front {
+  right: 15px;
+}
+
+.car-wheel-back {
+  left: 15px;
+}
+
+.smoke {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+}
+
+.smoke span {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  display: block;
+  width: 5px;
+  height: 5px;
+  background: rgba(200, 200, 200, 0.5);
+  border-radius: 50%;
+}
+
+.smoke span:nth-child(1) {
+  animation: smokeUp 1.5s linear infinite;
+}
+
+.smoke span:nth-child(2) {
+  animation: smokeUp 1.5s linear infinite 0.25s;
+}
+
+.smoke span:nth-child(3) {
+  animation: smokeUp 1.5s linear infinite 0.5s;
+}
+
+.smoke span:nth-child(4) {
+  animation: smokeUp 1.5s linear infinite 0.75s;
+}
+
+.smoke span:nth-child(5) {
+  animation: smokeUp 1.5s linear infinite 1s;
+}
+
+.mountains {
+  position: absolute;
+  bottom: 80px;
+  width: 100%;
+  height: 80px;
+}
+
+.mountain {
+  position: absolute;
+  bottom: 0;
+  border-left: 50px solid transparent;
+  border-right: 50px solid transparent;
+  border-bottom: 80px solid #333;
+}
+
+.mountain:nth-child(1) {
+  left: 10%;
+}
+
+.mountain:nth-child(2) {
+  left: 30%;
+  border-bottom-color: #2a2a2a;
+  height: 100px;
+  bottom: -20px;
+}
+
+.mountain:nth-child(3) {
+  right: 30%;
+  border-bottom-color: #3a3a3a;
+}
+
+.mountain:nth-child(4) {
+  right: 10%;
+  border-bottom-color: #2a2a2a;
+  height: 90px;
+  bottom: -10px;
 }
 
 @keyframes moveRoad {
@@ -182,44 +369,21 @@
   }
 }
 
-.car-animation {
-  position: absolute;
-  bottom: 30px;
-  left: 10%;
-  width: 60px;
-  height: 30px;
-  background: #00ADB5;
-  border-radius: 10px 15px 5px 5px;
-  box-shadow: 0 -5px 0 0 #00ADB5;
-  animation: carBounce 0.5s ease-in-out infinite alternate;
-}
-
-.car-animation::before {
-  content: '';
-  position: absolute;
-  top: -15px;
-  width: 40px;
-  height: 15px;
-  background: #00ADB5;
-  right: 5px;
-  border-radius: 5px 10px 0 0;
-}
-
-.car-animation::after {
-  content: '';
-  position: absolute;
-  bottom: -7px;
-  width: 12px;
-  height: 12px;
-  background: #222;
-  border-radius: 50%;
-  box-shadow: 40px 0 0 #222;
-  animation: wheelRotate 0.5s linear infinite;
-}
-
-@keyframes carBounce {
-  to {
-    transform: translateY(-2px);
+@keyframes carMove {
+  0% {
+    transform: translateX(0) translateY(0);
+  }
+  25% {
+    transform: translateX(10px) translateY(-2px);
+  }
+  50% {
+    transform: translateX(20px) translateY(0);
+  }
+  75% {
+    transform: translateX(10px) translateY(-1px);
+  }
+  100% {
+    transform: translateX(0) translateY(0);
   }
 }
 
@@ -229,16 +393,24 @@
   }
 }
 
-.finora-button {
-  @apply rounded-md bg-gocabs-primary px-4 py-2 text-white shadow-lg hover:bg-gocabs-primary/90 transition-all duration-200;
+@keyframes smokeUp {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-20px) scale(3);
+    opacity: 0;
+  }
 }
 
-.finora-card {
-  @apply rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gocabs-accent p-6 shadow-sm hover:shadow-lg transition-all duration-300;
-}
-
-.finora-input {
-  @apply rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 focus:border-gocabs-primary focus:ring-2 focus:ring-gocabs-primary/50 dark:bg-gocabs-accent/50;
+@keyframes movingStars {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -300px 200px;
+  }
 }
 
 /* Finora design micro-interactions */
@@ -250,5 +422,44 @@
   @apply transition-shadow duration-300 hover:shadow-glow;
 }
 
-/* Adding Inter font */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+/* Gradient headers */
+.finora-header {
+  @apply text-5xl sm:text-6xl md:text-7xl font-extrabold;
+  background: linear-gradient(to right, #111, #333);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.dark .finora-header {
+  background: linear-gradient(to right, #fff, #ccc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Card designs */
+.finora-feature-card {
+  @apply rounded-xl border border-gray-200 dark:border-gray-800 p-6 bg-white dark:bg-black/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-1;
+}
+
+/* Stats counter */
+.finora-stats {
+  @apply text-4xl font-bold;
+  background: linear-gradient(to right, #111, #555);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.dark .finora-stats {
+  background: linear-gradient(to right, #fff, #aaa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Enhanced button styles */
+.finora-primary-button {
+  @apply rounded-lg px-6 py-3 text-white bg-black dark:bg-white dark:text-black font-medium shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 text-sm;
+}
+
+.finora-outline-button {
+  @apply rounded-lg px-6 py-3 border-2 border-black text-black dark:border-white dark:text-white font-medium shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 text-sm;
+}

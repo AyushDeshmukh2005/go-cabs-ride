@@ -6,28 +6,28 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gocabs-secondary text-white">
+    <footer className="bg-black text-white">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div>
             <div className="flex items-center space-x-2 mb-4">
-              <div className="bg-gocabs-primary rounded-full p-1">
-                <Car className="h-6 w-6 text-white" />
+              <div className="bg-white rounded-full p-1">
+                <Car className="h-6 w-6 text-black" />
               </div>
-              <span className="font-bold text-xl">GoCabs</span>
+              <span className="font-bold text-xl">FINORA</span>
             </div>
             <p className="text-gray-300 mb-4">
               The modern ride-hailing platform with premium features for both riders and drivers.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-300 hover:text-gocabs-primary transition-colors">
+              <a href="#" className="text-gray-300 hover:text-white transition-colors">
                 <Facebook size={20} />
               </a>
-              <a href="#" className="text-gray-300 hover:text-gocabs-primary transition-colors">
+              <a href="#" className="text-gray-300 hover:text-white transition-colors">
                 <Twitter size={20} />
               </a>
-              <a href="#" className="text-gray-300 hover:text-gocabs-primary transition-colors">
+              <a href="#" className="text-gray-300 hover:text-white transition-colors">
                 <Instagram size={20} />
               </a>
             </div>
@@ -38,16 +38,16 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/" className="text-gray-300 hover:text-gocabs-primary transition-colors">Home</Link>
+                <Link to="/" className="text-gray-300 hover:text-white transition-colors">Home</Link>
               </li>
               <li>
-                <Link to="/booking" className="text-gray-300 hover:text-gocabs-primary transition-colors">Book a Ride</Link>
+                <Link to="/booking" className="text-gray-300 hover:text-white transition-colors">Book a Ride</Link>
               </li>
               <li>
-                <Link to="/history" className="text-gray-300 hover:text-gocabs-primary transition-colors">Ride History</Link>
+                <Link to="/history" className="text-gray-300 hover:text-white transition-colors">Ride History</Link>
               </li>
               <li>
-                <Link to="/profile" className="text-gray-300 hover:text-gocabs-primary transition-colors">Profile</Link>
+                <Link to="/profile" className="text-gray-300 hover:text-white transition-colors">Profile</Link>
               </li>
             </ul>
           </div>
@@ -57,16 +57,16 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Our Services</h3>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-gray-300 hover:text-gocabs-primary transition-colors">Regular Rides</a>
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">Regular Rides</a>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-gocabs-primary transition-colors">Multi-stop Rides</a>
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">Multi-stop Rides</a>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-gocabs-primary transition-colors">Subscription Plans</a>
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">Subscription Plans</a>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-gocabs-primary transition-colors">Corporate Services</a>
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">Corporate Services</a>
               </li>
             </ul>
           </div>
@@ -76,23 +76,23 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
             <ul className="space-y-3">
               <li className="flex items-start">
-                <Mail className="h-5 w-5 mr-2 text-gocabs-primary" />
-                <span className="text-gray-300">support@gocabs.com</span>
+                <Mail className="h-5 w-5 mr-2 text-gray-400" />
+                <span className="text-gray-300">support@finora.com</span>
               </li>
               <li className="flex items-start">
-                <Phone className="h-5 w-5 mr-2 text-gocabs-primary" />
+                <Phone className="h-5 w-5 mr-2 text-gray-400" />
                 <span className="text-gray-300">+1 (555) 123-4567</span>
               </li>
               <li className="flex items-start">
-                <MapPin className="h-5 w-5 mr-2 mt-1 text-gocabs-primary" />
-                <span className="text-gray-300">123 Ride Street, Transit City, TC 10001</span>
+                <MapPin className="h-5 w-5 mr-2 mt-1 text-gray-400" />
+                <span className="text-gray-300">123 Finance Street, Tech City, TC 10001</span>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-gray-700 mt-10 pt-6 text-center text-gray-400">
-          <p>© {currentYear} GoCabs. All rights reserved.</p>
+        <div className="border-t border-gray-800 mt-10 pt-6 text-center text-gray-400">
+          <p>© {currentYear} FINORA. All rights reserved.</p>
         </div>
       </div>
     </footer>
