@@ -148,268 +148,291 @@
   @apply rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-2 focus:border-black focus:ring-1 focus:ring-black dark:focus:border-white dark:focus:ring-white dark:bg-gray-900/50;
 }
 
-/* Advanced Car Animation */
-.road-container {
+/* Enhanced Realistic Cab Animation */
+.city-road-container {
   position: relative;
   width: 100%;
-  height: 280px;
+  height: 300px;
   overflow: hidden;
-  background: #111;
+  background: linear-gradient(to bottom, #1a1b26, #2a2c3e);
   border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-.road {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 80px;
-  background: #222;
-}
-
-.road::before {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: repeating-linear-gradient(
-    to right,
-    transparent,
-    transparent 50px,
-    #fff 50px,
-    #fff 100px
-  );
-  animation: moveRoad 1s linear infinite;
-}
-
-.stars {
+.city-background {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 70%;
-  background-image: 
-    radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 90px 40px, #fff, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 160px 120px, #ddd, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 200px 80px, #fff, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 240px 50px, #fff, rgba(0,0,0,0));
-  background-repeat: repeat;
-  background-size: 300px 200px;
-  animation: movingStars 20s linear infinite;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" preserveAspectRatio="none"><rect x="10" y="200" width="50" height="100" fill="%23394053"/><rect x="70" y="150" width="60" height="150" fill="%23343747"/><rect x="140" y="120" width="70" height="180" fill="%23394053"/><rect x="220" y="180" width="40" height="120" fill="%23343747"/><rect x="270" y="100" width="80" height="200" fill="%23444857"/><rect x="360" y="150" width="60" height="150" fill="%23343747"/><rect x="430" y="170" width="90" height="130" fill="%23394053"/><rect x="530" y="120" width="70" height="180" fill="%23444857"/><rect x="610" y="190" width="50" height="110" fill="%23343747"/><rect x="670" y="100" width="80" height="200" fill="%23394053"/><rect x="760" y="160" width="60" height="140" fill="%23444857"/><rect x="830" y="140" width="50" height="160" fill="%23343747"/><rect x="890" y="110" width="100" height="190" fill="%23394053"/></svg>') repeat-x;
+  background-size: 1000px 100%;
+  animation: moveCity 30s linear infinite;
 }
 
-.moon {
+.city-road {
   position: absolute;
-  top: 40px;
-  right: 80px;
-  width: 60px;
-  height: 60px;
-  background: #fff;
-  border-radius: 50%;
-  box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.8);
+  bottom: 0;
+  width: 100%;
+  height: 30%;
+  background: #333;
+  overflow: hidden;
 }
 
-.car-animation {
+.street-markings {
   position: absolute;
-  bottom: 40px;
-  left: 20%;
-  width: 100px;
-  height: 40px;
-  background: #000;
-  border-radius: 20px 30px 5px 10px;
-  animation: carMove 6s ease-in-out infinite alternate;
+  top: 50%;
+  width: 100%;
+  height: 6px;
+  transform: translateY(-50%);
+  background: repeating-linear-gradient(to right, #fff, #fff 50px, transparent 50px, transparent 100px);
+  animation: moveRoad 5s linear infinite;
 }
 
-.car-animation::before {
-  content: '';
+.street-lights {
   position: absolute;
   top: -20px;
-  width: 70px;
+  left: 0;
+  width: 100%;
   height: 20px;
-  background: #000;
-  right: 10px;
-  border-radius: 20px 20px 0 0;
+  background: repeating-linear-gradient(to right, transparent, transparent 150px, #ffcc00 150px, #ffcc00 155px, transparent 155px, transparent 300px);
+  animation: moveLights 5s linear infinite;
 }
 
-.car-lights-front {
+.taxi {
   position: absolute;
-  bottom: 10px;
-  right: 0;
-  width: 12px;
-  height: 6px;
-  background: #fff;
-  border-radius: 3px;
-  box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.7);
+  bottom: 30px;
+  left: 100px;
+  z-index: 5;
+  animation: taxiAnimation 10s linear infinite;
 }
 
-.car-lights-back {
-  position: absolute;
-  bottom: 10px;
-  left: 5px;
-  width: 8px;
-  height: 6px;
-  background: #ff3333;
-  border-radius: 3px;
-  box-shadow: 0 0 8px 2px rgba(255, 0, 0, 0.5);
+.taxi-body {
+  position: relative;
+  width: 80px;
+  height: 35px;
+  background: #ffcc00;
+  border-radius: 8px 12px 5px 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-.car-window {
+.taxi-roof {
   position: absolute;
-  top: -18px;
-  right: 25px;
-  width: 30px;
+  top: -15px;
+  left: 15px;
+  width: 50px;
   height: 15px;
-  background: #333;
+  background: #ffcc00;
   border-radius: 5px 5px 0 0;
-  border-top: 2px solid #444;
-  border-left: 2px solid #444;
-  border-right: 2px solid #444;
 }
 
-.car-wheel {
+.taxi-window {
   position: absolute;
-  bottom: -10px;
-  width: 20px;
-  height: 20px;
+  top: -12px;
+  left: 20px;
+  width: 40px;
+  height: 12px;
   background: #333;
+  border-radius: 4px 4px 0 0;
+  border: 2px solid #ffcc00;
+}
+
+.taxi-headlight {
+  position: absolute;
+  bottom: 8px;
+  right: 2px;
+  width: 8px;
+  height: 5px;
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.4);
+}
+
+.taxi-taillight {
+  position: absolute;
+  bottom: 8px;
+  left: 2px;
+  width: 6px;
+  height: 5px;
+  background: #ff3333;
+  border-radius: 2px;
+  box-shadow: 0 0 8px 2px rgba(255, 0, 0, 0.3);
+}
+
+.taxi-wheel {
+  position: absolute;
+  bottom: -8px;
+  width: 16px;
+  height: 16px;
+  background: #222;
   border-radius: 50%;
-  border: 3px solid #555;
+  border: 3px solid #444;
   animation: wheelRotate 0.5s linear infinite;
 }
 
-.car-wheel-front {
+.taxi-wheel-front {
   right: 15px;
 }
 
-.car-wheel-back {
+.taxi-wheel-back {
   left: 15px;
 }
 
-.smoke {
+.taxi-sign {
   position: absolute;
-  bottom: 10px;
-  left: 0;
+  top: -23px;
+  left: 35px;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
 }
 
-.smoke span {
+.taxi-sign span {
+  font-size: 6px;
+  font-weight: bold;
+  color: #000;
+}
+
+.city-buildings {
   position: absolute;
-  bottom: 10px;
+  top: -30px;
   left: 0;
-  display: block;
-  width: 5px;
-  height: 5px;
-  background: rgba(200, 200, 200, 0.5);
+  width: 200%;
+  height: 30px;
+  background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.3)), 
+              repeating-linear-gradient(to right,
+                #333 0px, #333 40px, #444 40px, #444 50px,
+                #333 50px, #333 90px, #444 90px, #444 110px,
+                #333 110px, #333 140px, #444 140px, #444 160px);
+  animation: moveBuildings 20s linear infinite;
+}
+
+.pickup-pin, .dropoff-pin {
+  position: absolute;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
+  z-index: 4;
 }
 
-.smoke span:nth-child(1) {
-  animation: smokeUp 1.5s linear infinite;
+.pickup-pin {
+  bottom: 50px;
+  left: 35%;
+  background: #00adb5;
 }
 
-.smoke span:nth-child(2) {
-  animation: smokeUp 1.5s linear infinite 0.25s;
+.dropoff-pin {
+  bottom: 50px;
+  right: 35%;
+  background: #ff5765;
 }
 
-.smoke span:nth-child(3) {
-  animation: smokeUp 1.5s linear infinite 0.5s;
-}
-
-.smoke span:nth-child(4) {
-  animation: smokeUp 1.5s linear infinite 0.75s;
-}
-
-.smoke span:nth-child(5) {
-  animation: smokeUp 1.5s linear infinite 1s;
-}
-
-.mountains {
+.pickup-pulse, .dropoff-pulse {
   position: absolute;
-  bottom: 80px;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 80px;
+  height: 100%;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
 }
 
-.mountain {
+.pickup-pulse {
+  background: rgba(0, 173, 181, 0.6);
+}
+
+.dropoff-pulse {
+  background: rgba(255, 87, 101, 0.6);
+}
+
+.route-line {
   position: absolute;
-  bottom: 0;
-  border-left: 50px solid transparent;
-  border-right: 50px solid transparent;
-  border-bottom: 80px solid #333;
+  bottom: 50px;
+  left: calc(35% + 7px);
+  width: calc(30% + 15px);
+  height: 3px;
+  background: linear-gradient(to right, #00adb5, #ff5765);
+  z-index: 3;
 }
 
-.mountain:nth-child(1) {
-  left: 10%;
-}
-
-.mountain:nth-child(2) {
-  left: 30%;
-  border-bottom-color: #2a2a2a;
-  height: 100px;
-  bottom: -20px;
-}
-
-.mountain:nth-child(3) {
-  right: 30%;
-  border-bottom-color: #3a3a3a;
-}
-
-.mountain:nth-child(4) {
-  right: 10%;
-  border-bottom-color: #2a2a2a;
-  height: 90px;
-  bottom: -10px;
+@keyframes moveCity {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: -1000px;
+  }
 }
 
 @keyframes moveRoad {
+  from {
+    background-position-x: 0;
+  }
   to {
-    background-position: -100px 0;
+    background-position-x: -100px;
   }
 }
 
-@keyframes carMove {
-  0% {
+@keyframes moveLights {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: -300px;
+  }
+}
+
+@keyframes moveBuildings {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes taxiAnimation {
+  0%, 100% {
     transform: translateX(0) translateY(0);
   }
   25% {
-    transform: translateX(10px) translateY(-2px);
+    transform: translateX(50px) translateY(-2px);
   }
   50% {
-    transform: translateX(20px) translateY(0);
+    transform: translateX(100px) translateY(0);
   }
   75% {
-    transform: translateX(10px) translateY(-1px);
-  }
-  100% {
-    transform: translateX(0) translateY(0);
+    transform: translateX(50px) translateY(-1px);
   }
 }
 
 @keyframes wheelRotate {
+  from {
+    transform: rotate(0deg);
+  }
   to {
     transform: rotate(360deg);
   }
 }
 
-@keyframes smokeUp {
+@keyframes pulse {
   0% {
-    transform: translateY(0) scale(1);
-    opacity: 0.5;
+    transform: scale(1);
+    opacity: 0.8;
   }
-  100% {
-    transform: translateY(-20px) scale(3);
+  70% {
+    transform: scale(2);
     opacity: 0;
   }
-}
-
-@keyframes movingStars {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: -300px 200px;
+  100% {
+    transform: scale(1);
+    opacity: 0;
   }
 }
 

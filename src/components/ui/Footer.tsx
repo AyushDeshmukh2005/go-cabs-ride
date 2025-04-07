@@ -15,7 +15,7 @@ const Footer = () => {
               <div className="bg-white rounded-full p-1">
                 <Car className="h-6 w-6 text-black" />
               </div>
-              <span className="font-bold text-xl">FINORA</span>
+              <span className="font-bold text-xl">GOCABS</span>
             </div>
             <p className="text-gray-300 mb-4">
               The modern ride-hailing platform with premium features for both riders and drivers.
@@ -77,7 +77,7 @@ const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-start">
                 <Mail className="h-5 w-5 mr-2 text-gray-400" />
-                <span className="text-gray-300">support@finora.com</span>
+                <span className="text-gray-300">support@gocabs.com</span>
               </li>
               <li className="flex items-start">
                 <Phone className="h-5 w-5 mr-2 text-gray-400" />
@@ -85,14 +85,14 @@ const Footer = () => {
               </li>
               <li className="flex items-start">
                 <MapPin className="h-5 w-5 mr-2 mt-1 text-gray-400" />
-                <span className="text-gray-300">123 Finance Street, Tech City, TC 10001</span>
+                <span className="text-gray-300">123 Ride Street, Tech City, TC 10001</span>
               </li>
             </ul>
           </div>
         </div>
 
         <div className="border-t border-gray-800 mt-10 pt-6 text-center text-gray-400">
-          <p>© {currentYear} FINORA. All rights reserved.</p>
+          <p>© {currentYear} GOCABS. All rights reserved.</p>
         </div>
       </div>
     </footer>

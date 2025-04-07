@@ -66,7 +66,7 @@ export function Navbar() {
               <Car className="h-6 w-6 text-white dark:text-black" />
             </div>
             <span className="font-bold text-xl text-black dark:text-white">
-              FINORA
+              GOCABS
             </span>
           </Link>
 
