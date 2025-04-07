@@ -36,6 +36,7 @@ const Booking = () => {
     { id: 2, name: "Jane Smith", rating: 4.8, car: "Honda Civic", available: false },
     { id: 3, name: "Alex Johnson", rating: 4.7, car: "Ford Focus", available: true },
   ]);
+  const [passengers, setPassengers] = useState("1");
 
   const addStop = () => {
     if (stops.length < 5) {
@@ -196,7 +197,7 @@ const Booking = () => {
                     <Label className="text-gray-700 dark:text-gray-300">Number of Passengers</Label>
                     <div className="relative">
                       <Users className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-                      <Select>
+                      <Select value={passengers} onValueChange={setPassengers}>
                         <SelectTrigger className="pl-10">
                           <SelectValue placeholder="Select passengers" />
                         </SelectTrigger>
