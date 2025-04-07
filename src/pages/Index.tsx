@@ -96,22 +96,22 @@ export default function Index() {
 
   const howItWorks = [
     {
-      icon: <Smartphone className="h-10 w-10 text-black dark:text-white" />,
+      icon: <Smartphone className="h-10 w-10 text-white" />,
       title: "Request a ride",
       description: "Enter your destination and select the type of ride you want"
     },
     {
-      icon: <Users className="h-10 w-10 text-black dark:text-white" />,
+      icon: <Users className="h-10 w-10 text-white" />,
       title: "Get matched with a driver",
       description: "We'll connect you with the best driver nearby"
     },
     {
-      icon: <MapPin className="h-10 w-10 text-black dark:text-white" />,
+      icon: <MapPin className="h-10 w-10 text-white" />,
       title: "Track your ride",
       description: "Follow your driver's arrival and journey in real-time"
     },
     {
-      icon: <Star className="h-10 w-10 text-black dark:text-white" />,
+      icon: <Star className="h-10 w-10 text-white" />,
       title: "Arrive safely",
       description: "Rate your driver and save them as a favorite for next time"
     }
@@ -141,18 +141,18 @@ export default function Index() {
   return (
     <div className="flex flex-col min-h-screen font-inter">
       {/* Hero Section with Enhanced Car Animation */}
-      <section className="relative bg-gradient-to-r from-gocabs-secondary to-gocabs-accent text-white min-h-[90vh] flex items-center overflow-hidden">
+      <section className="relative bg-black text-white min-h-[90vh] flex items-center overflow-hidden">
         <div className="container mx-auto px-4 py-24 sm:py-32 relative z-10">
           <div className="flex flex-col md:flex-row items-center">
             <div className="md:w-1/2 mb-12 md:mb-0">
-              <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold mb-6 animate-fadeIn">
+              <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold mb-6 animate-fadeIn finora-header">
                 Your Ride,<br />Your Way
               </h1>
               <p className="text-xl mb-8 text-gray-200 max-w-lg animate-fadeIn stagger-item">
                 Book rides easily, track your driver in real-time, and enjoy premium features with GoCabs.
               </p>
               <div className="flex flex-wrap gap-4 animate-fadeIn stagger-item">
-                <Button asChild size="lg" className="bg-gocabs-primary hover:bg-gocabs-primary/90 text-white">
+                <Button asChild size="lg" className="bg-yellow-500 hover:bg-yellow-600 text-black">
                   <Link to="/booking">Book Now</Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
@@ -173,6 +173,7 @@ export default function Index() {
                   <div className="taxi-body">
                     <div className="taxi-roof"></div>
                     <div className="taxi-window"></div>
+                    <div className="taxi-driver"></div>
                     <div className="taxi-headlight"></div>
                     <div className="taxi-taillight"></div>
                     <div className="taxi-wheel taxi-wheel-front"></div>
@@ -196,11 +197,11 @@ export default function Index() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-gray-50 dark:bg-black/95" ref={featuresRef}>
+      <section className="py-20 bg-black/95" ref={featuresRef}>
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 opacity-0 animate-fadeIn">
-            <h2 className="text-4xl font-bold mb-4 text-black dark:text-white">Premium Features for Premium Rides</h2>
-            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <h2 className="text-4xl font-bold mb-4 text-white">Premium Features for Premium Rides</h2>
+            <p className="text-gray-300 max-w-2xl mx-auto">
               Enjoy a range of advanced features designed to make your rides more comfortable and convenient.
             </p>
           </div>
@@ -209,14 +210,14 @@ export default function Index() {
             {features.map((feature, index) => (
               <Card 
                 key={index} 
-                className="finora-feature-card opacity-0 animate-fadeIn stagger-item"
+                className="finora-feature-card opacity-0 animate-fadeIn stagger-item bg-gray-900 text-white border-gray-800"
               >
                 <CardContent className="p-6">
-                  <div className="mb-4 bg-gray-100 dark:bg-gray-800 p-3 rounded-full inline-block">
+                  <div className="mb-4 bg-gray-800 p-3 rounded-full inline-block">
                     {feature.icon}
                   </div>
-                  <h3 className="text-xl font-semibold mb-2 text-black dark:text-white">{feature.title}</h3>
-                  <p className="text-gray-600 dark:text-gray-300">{feature.description}</p>
+                  <h3 className="text-xl font-semibold mb-2 text-white">{feature.title}</h3>
+                  <p className="text-gray-300">{feature.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -225,11 +226,11 @@ export default function Index() {
       </section>
 
       {/* How It Works */}
-      <section className="py-20 bg-white dark:bg-black" ref={howItWorksRef}>
+      <section className="py-20 bg-black" ref={howItWorksRef}>
         <div className="container mx-auto px-4">
           <div className="text-center mb-16 opacity-0 animate-fadeIn">
-            <h2 className="text-4xl font-bold mb-4 text-black dark:text-white">How GoCabs Works</h2>
-            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <h2 className="text-4xl font-bold mb-4 text-white">How GoCabs Works</h2>
+            <p className="text-gray-300 max-w-2xl mx-auto">
               Getting a ride is easier than ever with our simple four-step process
             </p>
           </div>
@@ -237,11 +238,11 @@ export default function Index() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {howItWorks.map((step, index) => (
               <div key={index} className="text-center opacity-0 animate-fadeIn stagger-item hover-lift">
-                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gocabs-primary/10 text-gocabs-primary mb-6">
+                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-yellow-500/10 text-yellow-500 mb-6">
                   {step.icon}
                 </div>
-                <h3 className="text-xl font-semibold mb-3 text-black dark:text-white">{step.title}</h3>
-                <p className="text-gray-600 dark:text-gray-300">{step.description}</p>
+                <h3 className="text-xl font-semibold mb-3 text-white">{step.title}</h3>
+                <p className="text-gray-300">{step.description}</p>
               </div>
             ))}
           </div>
@@ -249,35 +250,35 @@ export default function Index() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 bg-gray-50 dark:bg-black/95">
+      <section className="py-20 bg-black/95">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4 text-black dark:text-white">What Our Riders Say</h2>
-            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <h2 className="text-4xl font-bold mb-4 text-white">What Our Riders Say</h2>
+            <p className="text-gray-300 max-w-2xl mx-auto">
               Don't just take our word for it - hear from our happy customers
             </p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <Card key={index} className="finora-feature-card hover-lift">
+              <Card key={index} className="finora-feature-card hover-lift bg-gray-900 text-white border-gray-800">
                 <CardContent className="p-6">
                   <div className="flex mb-4">
                     {[...Array(testimonial.rating)].map((_, i) => (
                       <Star key={i} className="h-5 w-5 text-yellow-400 fill-yellow-400" />
                     ))}
                     {[...Array(5 - testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="h-5 w-5 text-gray-300" />
+                      <Star key={i} className="h-5 w-5 text-gray-600" />
                     ))}
                   </div>
-                  <p className="text-gray-600 dark:text-gray-300 mb-6 italic">"{testimonial.content}"</p>
+                  <p className="text-gray-300 mb-6 italic">"{testimonial.content}"</p>
                   <div className="flex items-center">
-                    <div className="bg-gocabs-primary rounded-full w-12 h-12 flex items-center justify-center text-white font-bold mr-4">
+                    <div className="bg-yellow-500 rounded-full w-12 h-12 flex items-center justify-center text-black font-bold mr-4">
                       {testimonial.name.charAt(0)}
                     </div>
                     <div>
-                      <h4 className="font-semibold text-black dark:text-white">{testimonial.name}</h4>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">{testimonial.role}</p>
+                      <h4 className="font-semibold text-white">{testimonial.name}</h4>
+                      <p className="text-sm text-gray-400">{testimonial.role}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -288,7 +289,7 @@ export default function Index() {
       </section>
 
       {/* App Download */}
-      <section className="py-20 bg-gocabs-secondary text-white">
+      <section className="py-20 bg-black text-white">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
@@ -331,7 +332,7 @@ export default function Index() {
             <div className="flex justify-center">
               <div className="relative">
                 <img src="/lovable-uploads/fe2d243a-05ad-4c56-85dc-c93fb3a3c219.png" alt="GoCabs Mobile App" className="max-w-xs w-full relative z-10 hover-lift rounded-xl" />
-                <div className="absolute inset-0 bg-gocabs-primary/20 filter blur-xl rounded-full transform -translate-y-1/4 scale-75 z-0"></div>
+                <div className="absolute inset-0 bg-yellow-500/20 filter blur-xl rounded-full transform -translate-y-1/4 scale-75 z-0"></div>
               </div>
             </div>
           </div>
@@ -345,7 +346,7 @@ export default function Index() {
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Join thousands of happy riders who have chosen GoCabs for their daily commute and special journeys.
           </p>
-          <Button asChild size="lg" className="bg-gocabs-primary hover:bg-gocabs-primary/90 text-white">
+          <Button asChild size="lg" className="bg-yellow-500 hover:bg-yellow-600 text-black">
             <Link to="/booking" className="flex items-center">
               Book Your First Ride <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
