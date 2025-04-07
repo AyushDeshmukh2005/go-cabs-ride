@@ -142,9 +142,9 @@ export default function Index() {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-gocabs-secondary to-gocabs-accent text-white min-h-[90vh] flex items-center">
+    <div className="flex flex-col min-h-screen font-['Inter',sans-serif]">
+      {/* Hero Section with Animated Car */}
+      <section className="relative bg-gradient-to-r from-gocabs-secondary to-gocabs-accent text-white min-h-[90vh] flex items-center overflow-hidden">
         <div className="absolute inset-0 bg-[url('/hero-pattern.svg')] opacity-10"></div>
         <div className="container mx-auto px-4 py-24 sm:py-32 relative z-10">
           <div className="flex flex-col md:flex-row items-center">
@@ -156,20 +156,20 @@ export default function Index() {
                 Experience the most comfortable and customizable ride-hailing service. Book, ride, and enjoy!
               </p>
               <div className="flex flex-wrap gap-4 animate-fadeIn stagger-item">
-                <Button asChild size="lg" className="bg-gocabs-primary hover:bg-gocabs-primary/90 text-white border-none">
+                <Button asChild size="lg" className="bg-gocabs-primary hover:bg-gocabs-primary/90 text-white border-none shadow-lg transition-all duration-300 hover-lift">
                   <Link to="/booking">Book Now</Link>
                 </Button>
-                <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+                <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10 shadow-lg transition-all duration-300 hover-lift">
                   <Link to="/booking">Learn More</Link>
                 </Button>
               </div>
             </div>
-            <div className="md:w-1/2 flex justify-center">
-              <img 
-                src="/lovable-uploads/bcde0d9b-3b24-48f1-badc-5bcbe2d0e87b.png" 
-                alt="GoCabs ride-hailing illustration" 
-                className="w-full max-w-lg animate-fadeIn stagger-item"
-              />
+            <div className="md:w-1/2 flex justify-center relative">
+              {/* Animated Car on Road */}
+              <div className="road-container w-full max-w-lg rounded-lg overflow-hidden">
+                <div className="road"></div>
+                <div className="car-animation"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -189,7 +189,7 @@ export default function Index() {
             {features.map((feature, index) => (
               <Card 
                 key={index} 
-                className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gocabs-accent shadow-soft hover:shadow-md transition-shadow duration-300 opacity-0 animate-fadeIn stagger-item"
+                className="finora-card hover-lift hover-glow opacity-0 animate-fadeIn stagger-item"
               >
                 <CardContent className="p-6">
                   <div className="mb-4 bg-gocabs-primary/10 p-3 rounded-full inline-block">
@@ -216,7 +216,7 @@ export default function Index() {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {howItWorks.map((step, index) => (
-              <div key={index} className="text-center opacity-0 animate-fadeIn stagger-item">
+              <div key={index} className="text-center opacity-0 animate-fadeIn stagger-item hover-lift">
                 <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gocabs-primary/10 text-gocabs-primary mb-6">
                   {step.icon}
                 </div>
@@ -240,7 +240,7 @@ export default function Index() {
           
           <div className="grid md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <Card key={index} className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gocabs-accent shadow-soft hover:shadow-md transition-shadow duration-300">
+              <Card key={index} className="finora-card hover-lift">
                 <CardContent className="p-6">
                   <div className="flex mb-4">
                     {[...Array(testimonial.rating)].map((_, i) => (
@@ -277,7 +277,7 @@ export default function Index() {
                 Get the full experience with our mobile app. Book rides, track your driver, and manage your account on the go.
               </p>
               <div className="flex flex-wrap gap-4">
-                <Button asChild variant="outline" className="border-white bg-white/10 text-white hover:bg-white/20">
+                <Button asChild variant="outline" className="border-white bg-white/10 text-white hover:bg-white/20 shadow-lg transition-all duration-300 hover-lift">
                   <a href="#" className="flex items-center">
                     <svg className="w-6 h-6 mr-2" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M17.6,13.3c0-0.2,0-0.3,0-0.5c0-0.2,0-0.4,0-0.6c0-0.6-0.1-1.2-0.2-1.7c-0.2-0.6-0.5-1.1-0.9-1.5c-0.4-0.4-0.9-0.7-1.4-0.9
@@ -297,7 +297,7 @@ export default function Index() {
                     App Store
                   </a>
                 </Button>
-                <Button asChild variant="outline" className="border-white bg-white/10 text-white hover:bg-white/20">
+                <Button asChild variant="outline" className="border-white bg-white/10 text-white hover:bg-white/20 shadow-lg transition-all duration-300 hover-lift">
                   <a href="#" className="flex items-center">
                     <svg className="w-6 h-6 mr-2" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M3,20.5V3.5C3,2.9,3.2,2.4,3.6,2.1c0.4-0.3,0.9-0.4,1.4-0.2l14.4,8.5c0.4,0.2,0.6,0.5,0.6,0.9
@@ -309,7 +309,10 @@ export default function Index() {
               </div>
             </div>
             <div className="flex justify-center">
-              <img src="/lovable-uploads/bcde0d9b-3b24-48f1-badc-5bcbe2d0e87b.png" alt="Mobile app" className="max-w-xs w-full" />
+              <div className="relative">
+                <img src="/lovable-uploads/bcde0d9b-3b24-48f1-badc-5bcbe2d0e87b.png" alt="Mobile app" className="max-w-xs w-full relative z-10 hover-lift" />
+                <div className="absolute inset-0 bg-gocabs-primary/20 filter blur-xl rounded-full transform -translate-y-1/4 scale-75 z-0"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -322,7 +325,7 @@ export default function Index() {
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Join thousands of happy riders who have chosen GoCabs for their daily commute and special journeys.
           </p>
-          <Button asChild size="lg" className="bg-gocabs-primary hover:bg-gocabs-primary/90 text-white">
+          <Button asChild size="lg" className="bg-gocabs-primary hover:bg-gocabs-primary/90 text-white shadow-lg transition-all duration-300 hover-lift">
             <Link to="/booking" className="flex items-center">
               Book Your First Ride <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
