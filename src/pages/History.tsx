@@ -8,8 +8,7 @@ import {
   Leaf, 
   Calendar, 
   Search, 
-  Filter,
-  ChevronRight, 
+  Loader,
   ChevronDown, 
   ChevronUp, 
 } from "lucide-react";
@@ -24,102 +23,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-// Sample data for ride history
-const rideHistory = [
-  {
-    id: 1,
-    date: "2025-04-02",
-    time: "08:30 AM",
-    pickup: "123 Main St",
-    destination: "456 Market St",
-    driver: "John Doe",
-    rating: 5,
-    price: "$15.50",
-    status: "completed",
-    carbon: "1.2 kg CO₂",
-    paymentMethod: "Credit Card",
-  },
-  {
-    id: 2,
-    date: "2025-04-01",
-    time: "05:45 PM",
-    pickup: "456 Market St",
-    destination: "123 Main St",
-    driver: "Jane Smith",
-    rating: 4,
-    price: "$12.75",
-    status: "completed",
-    carbon: "0.9 kg CO₂",
-    paymentMethod: "Cash",
-  },
-  {
-    id: 3,
-    date: "2025-03-30",
-    time: "10:15 AM",
-    pickup: "789 Park Ave",
-    destination: "101 Tech Blvd",
-    driver: "Alex Johnson",
-    rating: 5,
-    price: "$22.30",
-    status: "completed",
-    carbon: "1.8 kg CO₂",
-    paymentMethod: "Credit Card",
-  },
-  {
-    id: 4,
-    date: "2025-03-28",
-    time: "02:00 PM",
-    pickup: "101 Tech Blvd",
-    destination: "Central Mall",
-    driver: "Sarah Williams",
-    rating: 4,
-    price: "$10.25",
-    status: "completed",
-    carbon: "0.7 kg CO₂",
-    paymentMethod: "Credit Card",
-  },
-  {
-    id: 5,
-    date: "2025-03-25",
-    time: "09:30 AM",
-    pickup: "123 Main St",
-    destination: "Airport Terminal 2",
-    driver: "Michael Brown",
-    rating: 5,
-    price: "$42.80",
-    status: "completed",
-    carbon: "3.2 kg CO₂",
-    paymentMethod: "Cash",
-  },
-];
-
-// Upcoming scheduled rides
-const scheduledRides = [
-  {
-    id: 101,
-    date: "2025-04-08",
-    time: "08:00 AM",
-    pickup: "123 Main St",
-    destination: "Airport Terminal 1",
-    price: "$40-45",
-    status: "scheduled",
-  },
-  {
-    id: 102,
-    date: "2025-04-15",
-    time: "07:30 AM",
-    pickup: "123 Main St",
-    destination: "Conference Center",
-    price: "$15-18",
-    status: "scheduled",
-  },
-];
+import { useRideHistory } from "@/hooks/use-ride-history";
 
 const History = () => {
   const [expandedRide, setExpandedRide] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterMonth, setFilterMonth] = useState<string>("");
+  
+  const { 
+    rideHistory, 
+    scheduledRides, 
+    isLoading, 
+    error, 
+    bookAgain, 
+    cancelRide 
+  } = useRideHistory();
 
   const toggleRideDetails = (id: number) => {
     setExpandedRide(expandedRide === id ? null : id);
@@ -137,6 +55,33 @@ const History = () => {
     
     return matchesQuery && matchesMonth;
   });
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-16 flex justify-center items-center">
+        <div className="text-center">
+          <Loader className="h-8 w-8 animate-spin text-gocabs-primary mx-auto mb-4" />
+          <p className="text-gray-500 dark:text-gray-400">Loading your ride history...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-16">
+        <Card className="border-red-200 bg-red-50 dark:bg-red-900/10 dark:border-red-800">
+          <CardContent className="pt-6 text-center">
+            <h2 className="text-lg font-medium text-red-800 dark:text-red-400 mb-2">Error Loading Data</h2>
+            <p className="text-red-600 dark:text-red-300">{error}</p>
+            <Button variant="outline" className="mt-4">
+              Retry
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -172,7 +117,7 @@ const History = () => {
                           <SelectValue placeholder="Month" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="">All months</SelectItem>
+                          <SelectItem value="all">All months</SelectItem>
                           <SelectItem value="1">January</SelectItem>
                           <SelectItem value="2">February</SelectItem>
                           <SelectItem value="3">March</SelectItem>
@@ -268,7 +213,12 @@ const History = () => {
                               </div>
                               
                               <div className="flex space-x-3 mt-4">
-                                <Button variant="outline" size="sm" className="text-gocabs-primary border-gocabs-primary hover:bg-gocabs-primary/10">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  className="text-gocabs-primary border-gocabs-primary hover:bg-gocabs-primary/10"
+                                  onClick={() => bookAgain(ride.id)}
+                                >
                                   Book Again
                                 </Button>
                                 <Button variant="ghost" size="sm">View Receipt</Button>
@@ -312,7 +262,12 @@ const History = () => {
                           </div>
                           
                           <div className="flex space-x-3 mt-4">
-                            <Button variant="outline" size="sm" className="text-red-500 border-red-500 hover:bg-red-500/10">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="text-red-500 border-red-500 hover:bg-red-500/10"
+                              onClick={() => cancelRide(ride.id)}
+                            >
                               Cancel
                             </Button>
                             <Button variant="outline" size="sm" className="text-gocabs-primary border-gocabs-primary hover:bg-gocabs-primary/10">
