@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -13,9 +12,18 @@ import History from "./pages/History";
 import Profile from "./pages/Profile";
 import Notifications from "./pages/Notifications";
 import Footer from "./components/ui/Footer";
+import { checkDatabaseConnection } from "./utils/database";
 
-// Create a QueryClient instance for React Query
-const queryClient = new QueryClient();
+// Create a QueryClient instance for React Query with optimized settings for React 18
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60 * 1000, // 1 minute
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 // Initialize theme from localStorage or system preference
 const initializeTheme = () => {
@@ -32,6 +40,7 @@ const initializeTheme = () => {
 const App = () => {
   useEffect(() => {
     initializeTheme();
+    checkDatabaseConnection();
   }, []);
 
   return (

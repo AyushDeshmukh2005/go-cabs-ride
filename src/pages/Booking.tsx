@@ -1,32 +1,14 @@
-
 import { useState } from "react";
-import { 
-  MapPin, 
-  Calendar, 
-  Clock, 
-  Users, 
-  CreditCard, 
-  Car, 
-  ThumbsUp, 
-  Music, 
-  Thermometer, 
-  VolumeX, 
-  ChevronRight,
-  Search
-} from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { MapPin, Calendar, Clock, Users, CreditCard, Car } from "lucide-react";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "@/hooks/use-toast";
+import { apiService } from "@/services/api";
+import { checkDatabaseConnection } from "@/utils/database";
 
 const Booking = () => {
   const [stops, setStops] = useState([{ id: 1, address: "" }]);
