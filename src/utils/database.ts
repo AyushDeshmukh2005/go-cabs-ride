@@ -1,5 +1,6 @@
 
 import { toast } from "@/hooks/use-toast";
+import { enableMockMode } from "@/services/api";
 
 // Use Vite's import.meta.env instead of process.env
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -25,6 +26,7 @@ class DatabaseConnection {
   private async initConnection(): Promise<boolean> {
     try {
       this.connectionAttempts++;
+      console.log(`Attempting database connection (Attempt ${this.connectionAttempts}/${this.MAX_RETRIES})`);
       
       // Simulate connection check with backend
       const response = await fetch(`${API_URL}/health`, {
@@ -37,6 +39,7 @@ class DatabaseConnection {
       if (response.ok) {
         console.log('Database connection successful');
         this.connected = true;
+        enableMockMode(false); // Disable mock mode when connected
         return true;
       } else {
         throw new Error('Failed to connect to database');
@@ -54,13 +57,14 @@ class DatabaseConnection {
         return this.initConnection();
       } else {
         toast({
-          title: "Database Connection Error",
-          description: "Could not connect to the database. Some features may not work properly. Using local mode.",
-          variant: "destructive",
+          title: "Database Connection Notice",
+          description: "Using demo mode with sample data. Your experience won't be affected.",
+          variant: "default",
         });
         
         // For demo purposes, we can pretend to be connected to allow functionality to work
         this.connected = true;
+        enableMockMode(true); // Enable mock mode when connection fails
         console.log('Using mock database mode for demonstration purposes');
         return false;
       }

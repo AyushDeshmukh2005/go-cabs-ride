@@ -45,12 +45,15 @@ const App = () => {
     
     // Initialize database connection
     const initApp = async () => {
+      console.log("Initializing app and checking database connection...");
       const isConnected = await checkDatabaseConnection();
       
       // If database connection fails, enable mock mode for the API
       if (!isConnected) {
         console.log("Database connection failed, enabling mock mode for API");
         enableMockMode(true);
+      } else {
+        console.log("Database connection successful");
       }
     };
     

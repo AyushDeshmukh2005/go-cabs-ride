@@ -5,6 +5,22 @@ import { checkDatabaseConnection } from "@/utils/database";
 // Use Vite's import.meta.env instead of process.env
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
+// Define interfaces for API data types
+export interface RideData {
+  ride_type: string;
+  passengers: number;
+  preferences: {
+    silent: boolean;
+    music: boolean;
+    ac: boolean;
+  };
+  pickup_address?: string;
+  destination_address?: string;
+  stops?: string[];
+  is_scheduled?: boolean;
+  scheduled_at?: string;
+}
+
 interface ApiOptions {
   method?: string;
   body?: any;
@@ -13,7 +29,7 @@ interface ApiOptions {
   mockResponse?: any; // For demonstration when backend is not available
 }
 
-class ApiError extends Error {
+export class ApiError extends Error {
   status: number;
   data: any;
   
@@ -242,7 +258,7 @@ const apiService = {
     getById: (id: number) =>
       fetchApi(`/rides/${id}`),
     
-    book: (rideData: any) =>
+    book: (rideData: RideData) =>
       fetchApi("/rides", { method: "POST", body: rideData }),
     
     bookAgain: (id: number) =>

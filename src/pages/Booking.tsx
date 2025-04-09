@@ -14,7 +14,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/hooks/use-toast";
-import { apiService, handleApiError } from "@/services/api";
+import { apiService, handleApiError, RideData } from "@/services/api";
 import { checkDatabaseConnection } from "@/utils/database";
 
 const Booking = () => {
@@ -69,7 +69,7 @@ const Booking = () => {
       
       const currentTab = document.querySelector('[data-state="active"]')?.getAttribute('value') || 'standard';
       
-      let rideData = {
+      let rideData: RideData = {
         ride_type: selectedRideType,
         passengers: parseInt(passengers),
         preferences: preferences,
@@ -125,6 +125,8 @@ const Booking = () => {
           scheduled_at: `${scheduleDate}T${scheduleTime}`,
         };
       }
+      
+      console.log("Booking ride with data:", rideData);
       
       // Send booking request to API
       const response = await apiService.rides.book(rideData);
