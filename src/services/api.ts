@@ -135,7 +135,16 @@ const apiService = {
       fetchApi("/favorites/drivers")
   },
   
-  // You can add more API endpoints as needed
+  notifications: {
+    getAll: () =>
+      fetchApi("/notifications"),
+      
+    markAsRead: (id: number) =>
+      fetchApi(`/notifications/${id}/read`, { method: "PUT" }),
+      
+    markAllAsRead: () =>
+      fetchApi("/notifications/read-all", { method: "PUT" })
+  }
 };
 
 // Error handling utility that can be used with any API call

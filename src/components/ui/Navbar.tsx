@@ -1,164 +1,217 @@
 
-import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Car, Menu, X, User, Bell, Sun, Moon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useMediaQuery } from "@/hooks/use-media-query";
+import { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Moon, Sun, Menu, X, Bell } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 export function Navbar() {
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return document.documentElement.classList.contains('dark');
-    }
-    return false;
-  });
-  const location = useLocation();
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { pathname } = useLocation();
 
-  // Handle scroll effect
+  // Get the current theme from localStorage on component mount
   useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      setTheme(savedTheme);
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setTheme('dark');
+    } else {
+      setTheme('light');
+    }
+    
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+      if (window.scrollY > 10) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    
+    window.addEventListener('scroll', handleScroll);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
-  // Toggle dark mode
-  const toggleDarkMode = () => {
-    document.documentElement.classList.toggle("dark");
-    setIsDarkMode(!isDarkMode);
-    localStorage.setItem("theme", isDarkMode ? "light" : "dark");
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+    
+    if (newTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
   };
 
-  // Setup theme based on user preference
-  useEffect(() => {
-    const theme = localStorage.getItem("theme");
-    if (theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
-      document.documentElement.classList.add("dark");
-      setIsDarkMode(true);
-    } else {
-      document.documentElement.classList.remove("dark");
-      setIsDarkMode(false);
-    }
-  }, []);
-
-  const navLinks = [
-    { name: "Home", path: "/" },
-    { name: "Book a Ride", path: "/booking" },
-    { name: "Ride History", path: "/history" },
-    { name: "Profile", path: "/profile" },
-  ];
+  const isActive = (path: string) => pathname === path;
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-white/90 dark:bg-black/90 backdrop-blur-md shadow-md" : "bg-transparent"
-      }`}
-    >
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      isScrolled ? 'bg-black/90 backdrop-blur-md shadow-lg' : 'bg-transparent'
+    }`}>
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="bg-black dark:bg-white rounded-full p-1">
-              <Car className="h-6 w-6 text-white dark:text-black" />
-            </div>
-            <span className="font-bold text-xl text-black dark:text-white">
-              GOCABS
-            </span>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                className={`theme-transition text-sm font-medium hover:text-black dark:hover:text-white ${
-                  location.pathname === link.path
-                    ? "text-black dark:text-white"
-                    : "text-gray-700 dark:text-gray-300"
+        <div className="flex h-16 md:h-20 items-center justify-between">
+          <div className="flex items-center">
+            <Link to="/" className="flex items-center text-2xl font-bold text-white">
+              <span className="text-yellow-500">Go</span>Cabs
+            </Link>
+            
+            <nav className="hidden ml-10 md:flex items-center space-x-8">
+              <Link 
+                to="/" 
+                className={`text-sm font-medium transition-colors ${
+                  isActive('/') 
+                    ? 'text-yellow-500' 
+                    : 'text-gray-300 hover:text-white'
                 }`}
               >
-                {link.name}
+                Home
               </Link>
-            ))}
-          </nav>
-
-          {/* Actions */}
+              <Link 
+                to="/booking" 
+                className={`text-sm font-medium transition-colors ${
+                  isActive('/booking') 
+                    ? 'text-yellow-500' 
+                    : 'text-gray-300 hover:text-white'
+                }`}
+              >
+                Book a Ride
+              </Link>
+              <Link 
+                to="/history" 
+                className={`text-sm font-medium transition-colors ${
+                  isActive('/history') 
+                    ? 'text-yellow-500' 
+                    : 'text-gray-300 hover:text-white'
+                }`}
+              >
+                Ride History
+              </Link>
+              <Link 
+                to="/profile" 
+                className={`text-sm font-medium transition-colors ${
+                  isActive('/profile') 
+                    ? 'text-yellow-500' 
+                    : 'text-gray-300 hover:text-white'
+                }`}
+              >
+                Profile
+              </Link>
+            </nav>
+          </div>
+          
           <div className="flex items-center space-x-4">
-            <button
-              onClick={toggleDarkMode}
-              className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 theme-transition"
-              aria-label="Toggle dark mode"
+            <Link 
+              to="/notifications" 
+              className={`text-sm font-medium transition-colors ${
+                isActive('/notifications') 
+                  ? 'text-yellow-500' 
+                  : 'text-gray-300 hover:text-white'
+              }`}
             >
-              {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
-            </button>
-
-            <div className="hidden md:flex items-center space-x-3">
-              <Button variant="ghost" size="icon" className="text-black dark:text-white">
-                <Bell size={18} />
-              </Button>
-              
-              <Link to="/profile">
-                <Button variant="outline" size="sm" className="rounded-full border-2 border-black text-black dark:border-white dark:text-white hover:text-white hover:bg-black dark:hover:text-black dark:hover:bg-white transition-all duration-200">
-                  <User size={16} className="mr-1" />
-                  <span>Account</span>
+              <Bell className="h-5 w-5" />
+            </Link>
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="text-white">
+                  {theme === 'light' ? (
+                    <Sun className="h-5 w-5" />
+                  ) : (
+                    <Moon className="h-5 w-5" />
+                  )}
+                  <span className="sr-only">Toggle theme</span>
                 </Button>
-              </Link>
-            </div>
-
-            {/* Mobile menu button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden text-black dark:text-white"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={toggleTheme}>
+                  {theme === 'light' ? 'Dark theme' : 'Light theme'}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            
+            <Button variant="default" className="hidden md:flex bg-yellow-500 hover:bg-yellow-600 text-black">
+              <Link to="/booking">Book Now</Link>
             </Button>
+            
+            <button
+              className="md:hidden text-white"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
           </div>
         </div>
       </div>
-
-      {/* Mobile Navigation */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-white dark:bg-black shadow-lg animate-fadeInScale">
-          <div className="container mx-auto px-4 py-4">
-            <nav className="flex flex-col space-y-4">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  to={link.path}
-                  className={`py-2 px-4 rounded-md theme-transition ${
-                    location.pathname === link.path
-                      ? "bg-gray-100 dark:bg-gray-800 text-black dark:text-white"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {link.name}
-                </Link>
-              ))}
-              <Link
-                to="/profile"
-                className="py-2 px-4 rounded-md flex items-center text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 theme-transition"
-                onClick={() => setIsMenuOpen(false)}
+      
+      {/* Mobile menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-black/95 backdrop-blur-md py-4">
+          <div className="container mx-auto px-4 space-y-3">
+            <Link 
+              to="/" 
+              className={`block py-2 text-base font-medium ${
+                isActive('/') ? 'text-yellow-500' : 'text-gray-300'
+              }`}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Home
+            </Link>
+            <Link 
+              to="/booking" 
+              className={`block py-2 text-base font-medium ${
+                isActive('/booking') ? 'text-yellow-500' : 'text-gray-300'
+              }`}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Book a Ride
+            </Link>
+            <Link 
+              to="/history" 
+              className={`block py-2 text-base font-medium ${
+                isActive('/history') ? 'text-yellow-500' : 'text-gray-300'
+              }`}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Ride History
+            </Link>
+            <Link 
+              to="/profile" 
+              className={`block py-2 text-base font-medium ${
+                isActive('/profile') ? 'text-yellow-500' : 'text-gray-300'
+              }`}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Profile
+            </Link>
+            <Link 
+              to="/notifications" 
+              className={`block py-2 text-base font-medium ${
+                isActive('/notifications') ? 'text-yellow-500' : 'text-gray-300'
+              }`}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Notifications
+            </Link>
+            <Button className="w-full bg-yellow-500 hover:bg-yellow-600 text-black">
+              <Link 
+                to="/booking" 
+                onClick={() => setIsMobileMenuOpen(false)}
               >
-                <User size={18} className="mr-2" />
-                <span>Account</span>
+                Book Now
               </Link>
-              <Link
-                to="/notifications"
-                className="py-2 px-4 rounded-md flex items-center text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 theme-transition"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <Bell size={18} className="mr-2" />
-                <span>Notifications</span>
-              </Link>
-            </nav>
+            </Button>
           </div>
         </div>
       )}

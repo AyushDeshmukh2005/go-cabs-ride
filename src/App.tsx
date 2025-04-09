@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound";
 import Booking from "./pages/Booking";
 import History from "./pages/History";
 import Profile from "./pages/Profile";
+import Notifications from "./pages/Notifications";
 import Footer from "./components/ui/Footer";
 
 // Create a QueryClient instance for React Query
@@ -47,6 +48,7 @@ const App = () => {
                 <Route path="/booking" element={<Booking />} />
                 <Route path="/history" element={<History />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/notifications" element={<Notifications />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

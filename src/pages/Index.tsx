@@ -1,4 +1,3 @@
-
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { 
@@ -17,6 +16,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import CityScene from "@/components/3d/CityScene";
 
 export default function Index() {
   const featuresRef = useRef<HTMLDivElement>(null);
@@ -140,7 +140,7 @@ export default function Index() {
 
   return (
     <div className="flex flex-col min-h-screen font-inter">
-      {/* Hero Section with Enhanced Car Animation */}
+      {/* Hero Section with 3D Car Animation */}
       <section className="relative bg-black text-white min-h-[90vh] flex items-center overflow-hidden">
         <div className="container mx-auto px-4 py-24 sm:py-32 relative z-10">
           <div className="flex flex-col md:flex-row items-center">
@@ -161,36 +161,8 @@ export default function Index() {
               </div>
             </div>
             <div className="md:w-1/2 flex justify-center">
-              {/* Enhanced Realistic Cab Animation */}
-              <div className="city-road-container max-w-lg rounded-lg overflow-hidden">
-                <div className="city-background"></div>
-                <div className="city-road">
-                  <div className="city-buildings"></div>
-                  <div className="street-lights"></div>
-                  <div className="street-markings"></div>
-                </div>
-                <div className="taxi">
-                  <div className="taxi-body">
-                    <div className="taxi-roof"></div>
-                    <div className="taxi-window"></div>
-                    <div className="taxi-driver"></div>
-                    <div className="taxi-headlight"></div>
-                    <div className="taxi-taillight"></div>
-                    <div className="taxi-wheel taxi-wheel-front"></div>
-                    <div className="taxi-wheel taxi-wheel-back"></div>
-                    <div className="taxi-sign">
-                      <span>GOCABS</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="pickup-pin">
-                  <div className="pickup-pulse"></div>
-                </div>
-                <div className="dropoff-pin">
-                  <div className="dropoff-pulse"></div>
-                </div>
-                <div className="route-line"></div>
-              </div>
+              {/* 3D City Scene with Moving Car */}
+              <CityScene />
             </div>
           </div>
         </div>
@@ -331,7 +303,7 @@ export default function Index() {
             </div>
             <div className="flex justify-center">
               <div className="relative">
-                <img src="/lovable-uploads/fe2d243a-05ad-4c56-85dc-c93fb3a3c219.png" alt="GoCabs Mobile App" className="max-w-xs w-full relative z-10 hover-lift rounded-xl" />
+                <img src="/lovable-uploads/8383fe57-45c9-4f9c-b65f-bf4069993440.png" alt="GoCabs Mobile App" className="max-w-xs w-full relative z-10 hover-lift rounded-xl" />
                 <div className="absolute inset-0 bg-yellow-500/20 filter blur-xl rounded-full transform -translate-y-1/4 scale-75 z-0"></div>
               </div>
             </div>
