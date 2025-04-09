@@ -1,16 +1,25 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { MapPin, Calendar, Clock, Users, CreditCard, Car } from "lucide-react";
+import { 
+  MapPin, Calendar, Clock, Users, CreditCard, Car, 
+  VolumeX, Music, Thermometer, ThumbsUp, ChevronRight 
+} from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/hooks/use-toast";
-import { apiService } from "@/services/api";
+import { apiService, handleApiError } from "@/services/api";
 import { checkDatabaseConnection } from "@/utils/database";
 
 const Booking = () => {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const [stops, setStops] = useState([{ id: 1, address: "" }]);
   const [selectedRideType, setSelectedRideType] = useState("standard");
   const [favoriteDrivers] = useState([
@@ -19,6 +28,17 @@ const Booking = () => {
     { id: 3, name: "Alex Johnson", rating: 4.7, car: "Ford Focus", available: true },
   ]);
   const [passengers, setPassengers] = useState("1");
+  
+  // Form data states
+  const [pickupLocation, setPickupLocation] = useState("");
+  const [destination, setDestination] = useState("");
+  const [scheduleDate, setScheduleDate] = useState("");
+  const [scheduleTime, setScheduleTime] = useState("");
+  const [preferences, setPreferences] = useState({
+    silent: false,
+    music: false,
+    ac: true
+  });
 
   const addStop = () => {
     if (stops.length < 5) {
@@ -36,6 +56,94 @@ const Booking = () => {
     setStops(stops.map(stop => 
       stop.id === id ? { ...stop, address: value } : stop
     ));
+  };
+
+  const handlePreferenceChange = (key: keyof typeof preferences, value: boolean) => {
+    setPreferences(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handleFindDrivers = async () => {
+    try {
+      setIsLoading(true);
+      await checkDatabaseConnection();
+      
+      const currentTab = document.querySelector('[data-state="active"]')?.getAttribute('value') || 'standard';
+      
+      let rideData = {
+        ride_type: selectedRideType,
+        passengers: parseInt(passengers),
+        preferences: preferences,
+      };
+      
+      if (currentTab === 'standard') {
+        if (!pickupLocation || !destination) {
+          toast({
+            title: "Missing information",
+            description: "Please enter pickup location and destination",
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        rideData = {
+          ...rideData,
+          pickup_address: pickupLocation,
+          destination_address: destination,
+          is_scheduled: false,
+        };
+      } else if (currentTab === 'multi-stop') {
+        if (!pickupLocation || stops.some(stop => !stop.address)) {
+          toast({
+            title: "Missing information",
+            description: "Please enter all addresses",
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        rideData = {
+          ...rideData,
+          pickup_address: pickupLocation,
+          stops: stops.map(stop => stop.address),
+          is_scheduled: false,
+        };
+      } else if (currentTab === 'schedule') {
+        if (!pickupLocation || !destination || !scheduleDate || !scheduleTime) {
+          toast({
+            title: "Missing information",
+            description: "Please fill all schedule information",
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        rideData = {
+          ...rideData,
+          pickup_address: pickupLocation,
+          destination_address: destination,
+          is_scheduled: true,
+          scheduled_at: `${scheduleDate}T${scheduleTime}`,
+        };
+      }
+      
+      // Send booking request to API
+      const response = await apiService.rides.book(rideData);
+      
+      toast({
+        title: "Success!",
+        description: "Your ride has been booked. Searching for drivers...",
+      });
+      
+      // Simulate finding a driver
+      setTimeout(() => {
+        navigate('/history');
+      }, 2000);
+      
+    } catch (error) {
+      handleApiError(error, "Failed to book your ride. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const rideTypes = [
@@ -68,7 +176,13 @@ const Booking = () => {
                       <Label htmlFor="pickup" className="text-gray-700 dark:text-gray-300">Pickup Location</Label>
                       <div className="relative">
                         <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-                        <Input id="pickup" placeholder="Enter pickup location" className="pl-10" />
+                        <Input 
+                          id="pickup" 
+                          placeholder="Enter pickup location" 
+                          className="pl-10" 
+                          value={pickupLocation}
+                          onChange={(e) => setPickupLocation(e.target.value)}
+                        />
                       </div>
                     </div>
                     
@@ -76,7 +190,13 @@ const Booking = () => {
                       <Label htmlFor="destination" className="text-gray-700 dark:text-gray-300">Destination</Label>
                       <div className="relative">
                         <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-                        <Input id="destination" placeholder="Enter destination" className="pl-10" />
+                        <Input 
+                          id="destination" 
+                          placeholder="Enter destination" 
+                          className="pl-10" 
+                          value={destination}
+                          onChange={(e) => setDestination(e.target.value)}
+                        />
                       </div>
                     </div>
                   </div>
@@ -88,7 +208,13 @@ const Booking = () => {
                       <Label htmlFor="pickup-multi" className="text-gray-700 dark:text-gray-300">Pickup Location</Label>
                       <div className="relative">
                         <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-                        <Input id="pickup-multi" placeholder="Enter pickup location" className="pl-10" />
+                        <Input 
+                          id="pickup-multi" 
+                          placeholder="Enter pickup location" 
+                          className="pl-10" 
+                          value={pickupLocation}
+                          onChange={(e) => setPickupLocation(e.target.value)}
+                        />
                       </div>
                     </div>
                     
@@ -143,7 +269,13 @@ const Booking = () => {
                         <Label htmlFor="date" className="text-gray-700 dark:text-gray-300">Date</Label>
                         <div className="relative">
                           <Calendar className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-                          <Input id="date" type="date" className="pl-10" />
+                          <Input 
+                            id="date" 
+                            type="date" 
+                            className="pl-10" 
+                            value={scheduleDate}
+                            onChange={(e) => setScheduleDate(e.target.value)}
+                          />
                         </div>
                       </div>
                       
@@ -151,7 +283,13 @@ const Booking = () => {
                         <Label htmlFor="time" className="text-gray-700 dark:text-gray-300">Time</Label>
                         <div className="relative">
                           <Clock className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-                          <Input id="time" type="time" className="pl-10" />
+                          <Input 
+                            id="time" 
+                            type="time" 
+                            className="pl-10" 
+                            value={scheduleTime}
+                            onChange={(e) => setScheduleTime(e.target.value)}
+                          />
                         </div>
                       </div>
                     </div>
@@ -160,7 +298,13 @@ const Booking = () => {
                       <Label htmlFor="pickup-schedule" className="text-gray-700 dark:text-gray-300">Pickup Location</Label>
                       <div className="relative">
                         <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-                        <Input id="pickup-schedule" placeholder="Enter pickup location" className="pl-10" />
+                        <Input 
+                          id="pickup-schedule" 
+                          placeholder="Enter pickup location" 
+                          className="pl-10" 
+                          value={pickupLocation}
+                          onChange={(e) => setPickupLocation(e.target.value)}
+                        />
                       </div>
                     </div>
                     
@@ -168,7 +312,13 @@ const Booking = () => {
                       <Label htmlFor="destination-schedule" className="text-gray-700 dark:text-gray-300">Destination</Label>
                       <div className="relative">
                         <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-                        <Input id="destination-schedule" placeholder="Enter destination" className="pl-10" />
+                        <Input 
+                          id="destination-schedule" 
+                          placeholder="Enter destination" 
+                          className="pl-10" 
+                          value={destination}
+                          onChange={(e) => setDestination(e.target.value)}
+                        />
                       </div>
                     </div>
                   </div>
@@ -223,7 +373,11 @@ const Booking = () => {
                     <Label className="text-gray-700 dark:text-gray-300">Ride Preferences</Label>
                     <div className="grid grid-cols-2 gap-2">
                       <div className="flex items-center space-x-2">
-                        <Checkbox id="silent" />
+                        <Checkbox 
+                          id="silent" 
+                          checked={preferences.silent}
+                          onCheckedChange={(checked) => handlePreferenceChange('silent', !!checked)}
+                        />
                         <label
                           htmlFor="silent"
                           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center"
@@ -232,7 +386,11 @@ const Booking = () => {
                         </label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <Checkbox id="music" />
+                        <Checkbox 
+                          id="music" 
+                          checked={preferences.music}
+                          onCheckedChange={(checked) => handlePreferenceChange('music', !!checked)}
+                        />
                         <label
                           htmlFor="music"
                           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center"
@@ -241,7 +399,11 @@ const Booking = () => {
                         </label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <Checkbox id="ac" />
+                        <Checkbox 
+                          id="ac" 
+                          checked={preferences.ac}
+                          onCheckedChange={(checked) => handlePreferenceChange('ac', !!checked)}
+                        />
                         <label
                           htmlFor="ac"
                           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center"
@@ -252,8 +414,12 @@ const Booking = () => {
                     </div>
                   </div>
                   
-                  <Button className="w-full mt-4 bg-gocabs-primary hover:bg-gocabs-primary/90">
-                    Find Drivers
+                  <Button 
+                    className="w-full mt-4 bg-gocabs-primary hover:bg-gocabs-primary/90"
+                    onClick={handleFindDrivers}
+                    disabled={isLoading}
+                  >
+                    {isLoading ? "Processing..." : "Find Drivers"}
                   </Button>
                 </div>
               </Tabs>

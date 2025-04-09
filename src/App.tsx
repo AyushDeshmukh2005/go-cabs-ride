@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -13,6 +14,7 @@ import Profile from "./pages/Profile";
 import Notifications from "./pages/Notifications";
 import Footer from "./components/ui/Footer";
 import { checkDatabaseConnection } from "./utils/database";
+import { enableMockMode } from "./services/api";
 
 // Create a QueryClient instance for React Query with optimized settings for React 18
 const queryClient = new QueryClient({
@@ -40,7 +42,19 @@ const initializeTheme = () => {
 const App = () => {
   useEffect(() => {
     initializeTheme();
-    checkDatabaseConnection();
+    
+    // Initialize database connection
+    const initApp = async () => {
+      const isConnected = await checkDatabaseConnection();
+      
+      // If database connection fails, enable mock mode for the API
+      if (!isConnected) {
+        console.log("Database connection failed, enabling mock mode for API");
+        enableMockMode(true);
+      }
+    };
+    
+    initApp();
   }, []);
 
   return (
