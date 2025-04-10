@@ -1,4 +1,3 @@
-
 import { toast } from "@/hooks/use-toast";
 import { checkDatabaseConnection } from "@/utils/database";
 
@@ -52,13 +51,6 @@ export interface Address {
 export interface ApiError extends Error {
   status: number;
   data: any;
-  
-  constructor(message: string, status: number, data?: any) {
-    super(message);
-    this.name = "ApiError";
-    this.status = status;
-    this.data = data;
-  }
 }
 
 // Check if we're using the mock mode (when backend is not available)
