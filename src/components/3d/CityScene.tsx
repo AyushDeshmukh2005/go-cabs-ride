@@ -1,7 +1,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { PerspectiveCamera, OrbitControls, useGLTF, Environment } from '@react-three/drei';
+import { PerspectiveCamera, OrbitControls, Environment } from '@react-three/drei';
 import * as THREE from 'three';
 
 // Lazy load the car model to improve performance
@@ -33,7 +33,7 @@ const Buildings = () => {
     if (Math.abs(x) < 5 && Math.abs(z) < 5) continue;
     
     buildings.push(
-      <mesh key={i} position={[x, height / 2, z]}>
+      <mesh key={i} position={[x, height / 2, z]} castShadow receiveShadow>
         <boxGeometry args={[width, height, depth]} />
         <meshStandardMaterial color="#444444" />
       </mesh>
@@ -76,7 +76,7 @@ const Ground = () => {
 // Roads
 const Roads = () => {
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
       <planeGeometry args={[8, 100]} />
       <meshStandardMaterial color="#222222" />
     </mesh>
@@ -86,22 +86,60 @@ const Roads = () => {
 // Main component
 const CityScene = () => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const isMounted = useRef(true);
 
   useEffect(() => {
+    // Mark as mounted for cleanup
+    isMounted.current = true;
+
     // Mark as loaded after a brief delay to ensure smooth rendering
-    const timer = setTimeout(() => setIsLoaded(true), 500);
-    return () => clearTimeout(timer);
+    const timer = setTimeout(() => {
+      if (isMounted.current) {
+        setIsLoaded(true);
+      }
+    }, 800);
+
+    // Cleanup function
+    return () => {
+      isMounted.current = false;
+      clearTimeout(timer);
+    };
   }, []);
+
+  const handleError = () => {
+    console.error("Error loading 3D scene");
+    setIsError(true);
+  };
 
   return (
     <div className="w-full h-[500px] relative">
       {!isLoaded && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black">
-          <div className="animate-pulse text-yellow-500 text-xl">Loading City Scene...</div>
+        <div className="absolute inset-0 flex items-center justify-center bg-blue-600">
+          <div className="animate-pulse text-white text-xl">Loading City Scene...</div>
         </div>
       )}
-      <div className={`w-full h-full ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
-        <Canvas shadows className="rounded-lg overflow-hidden" dpr={[1, 2]}>
+      {isError && (
+        <div className="absolute inset-0 flex items-center justify-center bg-blue-600">
+          <div className="text-white text-xl">
+            <p>Unable to load 3D scene.</p>
+            <p className="text-sm">Please check your device compatibility.</p>
+          </div>
+        </div>
+      )}
+      <div 
+        className={`w-full h-full ${isLoaded && !isError ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}
+        style={{ perspective: '800px' }}
+      >
+        <Canvas 
+          shadows 
+          className="rounded-lg overflow-hidden" 
+          dpr={[1, 2]} 
+          onCreated={(state) => {
+            state.gl.setClearColor(new THREE.Color('#1E40AF')); // Match brand blue
+          }}
+          onError={handleError}
+        >
           <PerspectiveCamera makeDefault position={[15, 8, 15]} fov={45} />
           <ambientLight intensity={0.5} />
           <directionalLight 

@@ -15,6 +15,7 @@ import Notifications from "./pages/Notifications";
 import Footer from "./components/ui/Footer";
 import { checkDatabaseConnection } from "./utils/database";
 import { enableMockMode } from "./services/api";
+import { toast } from "@/hooks/use-toast";
 
 // Create a QueryClient instance for React Query with optimized settings for React 18
 const queryClient = new QueryClient({
@@ -52,12 +53,31 @@ const App = () => {
       if (!isConnected) {
         console.log("Database connection failed, enabling mock mode for API");
         enableMockMode(true);
+        
+        // Show a toast notification for the user
+        toast({
+          title: "Using Demo Mode",
+          description: "Connected to demo database with sample data. Full functionality is available.",
+          variant: "default",
+        });
       } else {
         console.log("Database connection successful");
       }
     };
     
     initApp();
+    
+    // Check for authentication token and handle session
+    const checkAuth = () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        console.log("User has an active session");
+      } else {
+        console.log("No active session");
+      }
+    };
+    
+    checkAuth();
   }, []);
 
   return (

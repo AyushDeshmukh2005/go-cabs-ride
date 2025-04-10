@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { 
   ArrowRight, 
@@ -17,12 +18,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import CityScene from "@/components/3d/CityScene";
+import { toast } from "@/hooks/use-toast";
 
 export default function Index() {
   const featuresRef = useRef<HTMLDivElement>(null);
   const howItWorksRef = useRef<HTMLDivElement>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
+    // Mark as loaded after a short delay
+    const timer = setTimeout(() => setIsLoaded(true), 1000);
+    
     const observerOptions = {
       root: null,
       rootMargin: '0px',
@@ -48,7 +54,10 @@ export default function Index() {
       observer.observe(howItWorksRef.current);
     }
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      clearTimeout(timer);
+    };
   }, []);
 
   const features = [
@@ -119,19 +128,19 @@ export default function Index() {
 
   const testimonials = [
     {
-      name: "Sarah Johnson",
+      name: "Parth Kathane",
       role: "Daily Commuter",
       content: "GoCabs has transformed my morning commute. The subscription plan saves me money, and I love being able to customize my ride experience.",
       rating: 5
     },
     {
-      name: "Michael Chen",
+      name: "Sandesh Phad",
       role: "Business Traveler",
       content: "The multi-stop feature is perfect for my client meetings. I can plan my entire day in one booking, and the drivers are always professional.",
       rating: 5
     },
     {
-      name: "Aisha Patel",
+      name: "Ruturaj Thalkar",
       role: "Weekend Explorer",
       content: "I love the carbon footprint tracker! It makes me feel good about my transportation choices, and the ride-pooling option has helped me meet new people.",
       rating: 4
@@ -140,14 +149,33 @@ export default function Index() {
 
   return (
     <div className="flex flex-col min-h-screen font-inter">
-      {/* Hero Section with 3D Car Animation */}
-      <section className="relative bg-black text-white min-h-[90vh] flex items-center overflow-hidden">
+      {/* Loading overlay */}
+      {!isLoaded && (
+        <div className="fixed inset-0 bg-blue-600 z-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-32 h-32 mx-auto mb-4">
+              <img src="/lovable-uploads/8ee23d22-4d58-448e-8429-505ee8a83daa.png" alt="GoCabs" className="w-full animate-pulse" />
+            </div>
+            <h1 className="text-5xl font-bold text-white mb-2">GoCabs</h1>
+            <p className="text-xl text-white opacity-80">YOUR RIDE BUDDY!!!</p>
+          </div>
+        </div>
+      )}
+
+      {/* Hero Section with Logo */}
+      <section className="relative bg-blue-600 text-white min-h-[90vh] flex items-center overflow-hidden">
         <div className="container mx-auto px-4 py-24 sm:py-32 relative z-10">
           <div className="flex flex-col md:flex-row items-center">
             <div className="md:w-1/2 mb-12 md:mb-0">
-              <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold mb-6 animate-fadeIn finora-header">
+              <div className="flex items-center mb-6">
+                <img src="/lovable-uploads/8ee23d22-4d58-448e-8429-505ee8a83daa.png" alt="GoCabs Logo" className="w-24 h-24 mr-4" />
+                <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold animate-fadeIn">
+                  GoCabs
+                </h1>
+              </div>
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 animate-fadeIn finora-header">
                 Your Ride,<br />Your Way
-              </h1>
+              </h2>
               <p className="text-xl mb-8 text-gray-200 max-w-lg animate-fadeIn stagger-item">
                 Book rides easily, track your driver in real-time, and enjoy premium features with GoCabs.
               </p>
@@ -312,7 +340,7 @@ export default function Index() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-black text-white">
+      <section className="py-16 bg-blue-600 text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold mb-6">Ready to experience better rides?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">

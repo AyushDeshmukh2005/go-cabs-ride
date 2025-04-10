@@ -21,15 +21,35 @@ export interface RideData {
   scheduled_at?: string;
 }
 
-interface ApiOptions {
-  method?: string;
-  body?: any;
-  headers?: Record<string, string>;
-  withAuth?: boolean;
-  mockResponse?: any; // For demonstration when backend is not available
+export interface EmergencyContact {
+  id?: number;
+  name: string;
+  phone: string;
+  relationship: string;
 }
 
-export class ApiError extends Error {
+export interface UserProfile {
+  name: string;
+  email: string;
+  phone: string;
+  address?: string;
+  preferences?: {
+    notifications: boolean;
+    darkMode: boolean;
+    language: string;
+    silentRides: boolean;
+    acAlwaysOn: boolean;
+  }
+}
+
+export interface Address {
+  id?: number;
+  type: string;
+  address: string;
+  default?: boolean;
+}
+
+export interface ApiError extends Error {
   status: number;
   data: any;
   
@@ -92,6 +112,32 @@ const mockResponses = {
       status: 'scheduled'
     }
   ],
+  '/rides/nearby-drivers': [
+    { 
+      id: 1, 
+      name: 'John Doe', 
+      vehicle: 'Toyota Camry', 
+      rating: 4.8, 
+      distanceAway: '2 mins',
+      location: { lat: 19.0760, lng: 72.8777 }
+    },
+    { 
+      id: 2, 
+      name: 'Sarah Miller', 
+      vehicle: 'Honda Civic', 
+      rating: 4.9, 
+      distanceAway: '3 mins',
+      location: { lat: 19.0810, lng: 72.8818 }
+    },
+    { 
+      id: 3, 
+      name: 'Mike Wilson', 
+      vehicle: 'Hyundai Sonata', 
+      rating: 4.7, 
+      distanceAway: '5 mins',
+      location: { lat: 19.0710, lng: 72.8747 }
+    }
+  ],
   '/auth/verify': {
     status: 'success',
     user: {
@@ -110,11 +156,24 @@ const mockResponses = {
     preferences: {
       notifications: true,
       darkMode: false,
-      language: 'en'
+      language: 'en',
+      silentRides: false,
+      acAlwaysOn: true
     },
     payment_methods: [
       { id: 1, type: 'Credit Card', last4: '4821', isDefault: true },
       { id: 2, type: 'Cash', isDefault: false }
+    ],
+    emergencyContacts: [
+      { id: 1, name: 'Emma Johnson', phone: '+1 (555) 987-6543', relationship: 'Spouse' }
+    ],
+    addresses: [
+      { id: 1, type: 'Home', address: '123 Main Street, Apt 4B, New York, NY 10001', default: true },
+      { id: 2, type: 'Work', address: '456 Business Ave, Suite 200, New York, NY 10018', default: false }
+    ],
+    favorites: [
+      { id: 1, name: 'John Doe', rating: 4.9, trips: 5 },
+      { id: 2, name: 'Sarah Williams', rating: 4.8, trips: 3 }
     ]
   },
   '/notifications': [
@@ -139,7 +198,50 @@ const mockResponses = {
       timestamp: '2023-10-13T18:45:00.000Z',
       read: false
     }
-  ]
+  ],
+  '/users/profile/update': {
+    status: 'success',
+    message: 'Profile updated successfully'
+  },
+  '/users/profile/emergency-contacts': [
+    { id: 1, name: 'Emma Johnson', phone: '+1 (555) 987-6543', relationship: 'Spouse' }
+  ],
+  '/users/profile/emergency-contacts/add': {
+    status: 'success',
+    message: 'Emergency contact added successfully',
+    contact: { id: 2, name: 'John Smith', phone: '+1 (555) 123-4567', relationship: 'Brother' }
+  },
+  '/users/profile/addresses': [
+    { id: 1, type: 'Home', address: '123 Main Street, Apt 4B, New York, NY 10001', default: true },
+    { id: 2, type: 'Work', address: '456 Business Ave, Suite 200, New York, NY 10018', default: false }
+  ],
+  '/users/profile/addresses/add': {
+    status: 'success',
+    message: 'Address added successfully',
+    address: { id: 3, type: 'Gym', address: '789 Fitness Blvd, New York, NY 10001', default: false }
+  },
+  '/auth/register': {
+    status: 'success',
+    message: 'User registered successfully',
+    token: 'mock-auth-token',
+    user: {
+      id: 2,
+      name: 'New User',
+      email: 'newuser@example.com',
+      role: 'rider'
+    }
+  },
+  '/auth/login': {
+    status: 'success',
+    message: 'Login successful',
+    token: 'mock-auth-token',
+    user: {
+      id: 1,
+      name: 'Test User',
+      email: 'test@example.com',
+      role: 'rider'
+    }
+  }
 };
 
 async function handleResponse(response: Response) {
@@ -150,13 +252,22 @@ async function handleResponse(response: Response) {
   if (!response.ok) {
     // Format error message from API
     const message = data?.message || data?.error || "An error occurred";
-    throw new ApiError(message, response.status, data);
+    const error = new Error(message) as ApiError;
+    error.status = response.status;
+    error.data = data;
+    throw error;
   }
 
   return data;
 }
 
-async function fetchApi(endpoint: string, options: ApiOptions = {}) {
+async function fetchApi(endpoint: string, options: {
+  method?: string;
+  body?: any;
+  headers?: Record<string, string>;
+  withAuth?: boolean;
+  mockResponse?: any;
+} = {}) {
   const {
     method = "GET",
     body,
@@ -210,9 +321,9 @@ async function fetchApi(endpoint: string, options: ApiOptions = {}) {
 
     return await handleResponse(response);
   } catch (error) {
-    if (error instanceof ApiError) {
+    if ((error as ApiError).status) {
       // Handle specific API errors
-      if (error.status === 401) {
+      if ((error as ApiError).status === 401) {
         // Unauthorized - redirect to login
         localStorage.removeItem("token");
         localStorage.removeItem("user");
@@ -245,7 +356,13 @@ const apiService = {
       fetchApi("/auth/register", { method: "POST", body: userData, withAuth: false }),
     
     verifyToken: () => 
-      fetchApi("/auth/verify")
+      fetchApi("/auth/verify"),
+      
+    logout: () => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      return Promise.resolve({ status: 'success', message: 'Logged out successfully' });
+    }
   },
   
   rides: {
@@ -271,18 +388,36 @@ const apiService = {
       fetchApi(`/rides/${id}/reschedule`, { method: "PUT", body: newData }),
     
     rate: (id: number, ratingData: any) =>
-      fetchApi(`/rides/${id}/rating`, { method: "POST", body: ratingData })
+      fetchApi(`/rides/${id}/rating`, { method: "POST", body: ratingData }),
+      
+    getNearbyDrivers: () =>
+      fetchApi("/rides/nearby-drivers", { method: "GET" })
   },
   
   user: {
     getProfile: () =>
       fetchApi("/users/profile"),
     
-    updateProfile: (userData: any) =>
-      fetchApi("/users/profile", { method: "PUT", body: userData }),
+    updateProfile: (userData: UserProfile) =>
+      fetchApi("/users/profile/update", { method: "PUT", body: userData }),
     
     getFavoriteDrivers: () =>
-      fetchApi("/favorites/drivers")
+      fetchApi("/favorites/drivers"),
+      
+    addEmergencyContact: (contact: EmergencyContact) =>
+      fetchApi("/users/profile/emergency-contacts/add", { method: "POST", body: contact }),
+      
+    getEmergencyContacts: () =>
+      fetchApi("/users/profile/emergency-contacts"),
+      
+    addAddress: (address: Address) =>
+      fetchApi("/users/profile/addresses/add", { method: "POST", body: address }),
+      
+    getAddresses: () =>
+      fetchApi("/users/profile/addresses"),
+      
+    updatePreferences: (preferences: any) =>
+      fetchApi("/users/profile/preferences", { method: "PUT", body: preferences })
   },
   
   notifications: {
@@ -301,7 +436,7 @@ const apiService = {
 const handleApiError = (error: any, fallbackMessage: string = "Something went wrong") => {
   console.error("API Error:", error);
   
-  if (error instanceof ApiError) {
+  if ((error as ApiError).status) {
     toast({
       title: "Error",
       description: error.message,
@@ -324,4 +459,4 @@ export const enableMockMode = (enable: boolean = true) => {
   console.log(`Mock API mode ${enable ? 'enabled' : 'disabled'}`);
 };
 
-export { apiService, handleApiError, ApiError };
+export { apiService, handleApiError };
