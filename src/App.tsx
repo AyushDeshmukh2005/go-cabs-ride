@@ -1,10 +1,10 @@
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Navbar } from "@/components/ui/Navbar";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -14,8 +14,10 @@ import Profile from "./pages/Profile";
 import Notifications from "./pages/Notifications";
 import Footer from "./components/ui/Footer";
 import { checkDatabaseConnection } from "./utils/database";
-import { enableMockMode } from "./services/api";
+import { enableMockMode, apiService } from "./services/api";
 import { toast } from "@/hooks/use-toast";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 // Create a QueryClient instance for React Query with optimized settings for React 18
 const queryClient = new QueryClient({
@@ -41,6 +43,9 @@ const initializeTheme = () => {
 };
 
 const App = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
   useEffect(() => {
     initializeTheme();
     
@@ -68,17 +73,43 @@ const App = () => {
     initApp();
     
     // Check for authentication token and handle session
-    const checkAuth = () => {
+    const checkAuth = async () => {
       const token = localStorage.getItem("token");
       if (token) {
-        console.log("User has an active session");
+        try {
+          // Verify token with backend
+          const response = await apiService.auth.verifyToken();
+          if (response.status === 'success') {
+            setIsAuthenticated(true);
+          } else {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            setIsAuthenticated(false);
+          }
+        } catch (error) {
+          console.error("Token verification failed:", error);
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          setIsAuthenticated(false);
+        }
       } else {
-        console.log("No active session");
+        setIsAuthenticated(false);
       }
+      setIsLoading(false);
     };
     
     checkAuth();
   }, []);
+
+  // Protected route component
+  const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+    if (isLoading) {
+      // Show loading state while checking authentication
+      return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    }
+    
+    return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
+  };
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -87,19 +118,49 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <div className="flex flex-col min-h-screen theme-transition">
-            <Navbar />
-            <main className="flex-grow pt-16 md:pt-20">
+            {isAuthenticated && <Navbar />}
+            <main className={`flex-grow ${isAuthenticated ? 'pt-16 md:pt-20' : 'pt-0'}`}>
               <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/booking" element={<Booking />} />
-                <Route path="/history" element={<History />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/notifications" element={<Notifications />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                {/* Public routes */}
+                <Route path="/login" element={
+                  isAuthenticated ? <Navigate to="/" /> : <Login setIsAuthenticated={setIsAuthenticated} />
+                } />
+                <Route path="/register" element={
+                  isAuthenticated ? <Navigate to="/" /> : <Register setIsAuthenticated={setIsAuthenticated} />
+                } />
+                
+                {/* Protected routes */}
+                <Route path="/" element={
+                  <ProtectedRoute>
+                    <Index />
+                  </ProtectedRoute>
+                } />
+                <Route path="/booking" element={
+                  <ProtectedRoute>
+                    <Booking />
+                  </ProtectedRoute>
+                } />
+                <Route path="/history" element={
+                  <ProtectedRoute>
+                    <History />
+                  </ProtectedRoute>
+                } />
+                <Route path="/profile" element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                } />
+                <Route path="/notifications" element={
+                  <ProtectedRoute>
+                    <Notifications />
+                  </ProtectedRoute>
+                } />
+                
+                {/* Catch-all route */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
-            <Footer />
+            {isAuthenticated && <Footer />}
           </div>
         </BrowserRouter>
       </TooltipProvider>

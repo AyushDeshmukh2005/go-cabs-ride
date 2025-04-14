@@ -28,7 +28,7 @@ class DatabaseConnection {
       this.connectionAttempts++;
       console.log(`Attempting database connection (Attempt ${this.connectionAttempts}/${this.MAX_RETRIES})`);
       
-      // Simulate connection check with backend
+      // Check connection with backend health endpoint
       const response = await fetch(`${API_URL}/health`, {
         method: 'GET',
         headers: {

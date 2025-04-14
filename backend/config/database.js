@@ -44,7 +44,7 @@ const initializeDatabase = async () => {
     // Create tables using the SQL from schema.sql
     console.log('Creating/updating database tables...');
     
-    // Create users table
+    // Create users table if not exists
     await pool.query(`
       CREATE TABLE IF NOT EXISTS users (
         id INT AUTO_INCREMENT PRIMARY KEY,

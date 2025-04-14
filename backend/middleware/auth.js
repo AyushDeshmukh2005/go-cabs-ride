@@ -1,6 +1,6 @@
 
 const jwt = require('jsonwebtoken');
-const db = require('../config/db');
+const { pool } = require('../config/db');
 
 // Verify JWT token
 exports.verifyToken = async (req, res, next) => {
@@ -14,11 +14,11 @@ exports.verifyToken = async (req, res, next) => {
     const token = authHeader.split(' ')[1];
     
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_jwt_secret');
       
       // Check if user exists and is active
-      const [users] = await db.query(
-        'SELECT id, name, email, role, is_active, is_verified FROM users WHERE id = ?',
+      const [users] = await pool.query(
+        'SELECT id, name, email, role, status FROM users WHERE id = ?',
         [decoded.id]
       );
       
@@ -28,13 +28,20 @@ exports.verifyToken = async (req, res, next) => {
       
       const user = users[0];
       
-      if (!user.is_active) {
+      if (user.status !== 'active') {
         return res.status(403).json({ message: 'Account is inactive or blocked' });
       }
       
       // For drivers, check if they're verified
-      if (user.role === 'driver' && !user.is_verified && req.path !== '/profile') {
-        return res.status(403).json({ message: 'Driver account not verified yet' });
+      if (user.role === 'driver' && req.path !== '/profile') {
+        const [drivers] = await pool.query(
+          'SELECT is_verified FROM drivers WHERE user_id = ?',
+          [user.id]
+        );
+        
+        if (drivers.length > 0 && !drivers[0].is_verified) {
+          return res.status(403).json({ message: 'Driver account not verified yet' });
+        }
       }
       
       // Set user in request

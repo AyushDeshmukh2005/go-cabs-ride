@@ -25,12 +25,12 @@ exports.register = async (req, res) => {
     // Insert user into database
     const [result] = await pool.query(
       'INSERT INTO users (name, email, password, phone, role) VALUES (?, ?, ?, ?, ?)',
-      [name, email, hashedPassword, phone, role]
+      [name, email, hashedPassword, phone || null, role || 'rider']
     );
 
     // Generate JWT token
     const token = jwt.sign(
-      { id: result.insertId, email, role },
+      { id: result.insertId, email, role: role || 'rider' },
       process.env.JWT_SECRET || 'your_jwt_secret',
       { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
     );
@@ -44,7 +44,7 @@ exports.register = async (req, res) => {
         name,
         email,
         phone,
-        role
+        role: role || 'rider'
       }
     });
   } catch (error) {

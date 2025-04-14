@@ -2,35 +2,31 @@
 require('dotenv').config();
 const express = require('express');
 const http = require('http');
-const socketIo = require('socket.io');
 const cors = require('cors');
 const morgan = require('morgan');
+const { initializeDatabase } = require('./config/database');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const rideRoutes = require('./routes/rides');
-const favoriteRoutes = require('./routes/favorites');
-const moodRoutes = require('./routes/moods');
-const adminRoutes = require('./routes/admin');
-const subscriptionRoutes = require('./routes/subscriptions');
-const optimizationRoutes = require('./routes/optimization');
-const emergencyRoutes = require('./routes/emergency');
-const { socketHandler } = require('./socket/socketHandler');
 const { verifyToken } = require('./middleware/auth');
 const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server, {
-  cors: {
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-    methods: ['GET', 'POST'],
-    credentials: true
+
+// Initialize database on server start
+initializeDatabase().then(success => {
+  if (success) {
+    console.log('Database initialized successfully!');
+  } else {
+    console.error('Database initialization failed!');
   }
 });
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
 // Static files
@@ -38,17 +34,8 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // API Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/rides', rideRoutes);
-app.use('/api/favorites', favoriteRoutes);
-app.use('/api/moods', moodRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/subscriptions', subscriptionRoutes);
-app.use('/api/optimization', optimizationRoutes);
-app.use('/api/emergency', emergencyRoutes);
-
-// Socket.io integration
-socketHandler(io);
+app.use('/api/users', verifyToken, userRoutes);
+app.use('/api/rides', verifyToken, rideRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
@@ -75,4 +62,4 @@ server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-module.exports = { app, server, io };
+module.exports = { app, server };
