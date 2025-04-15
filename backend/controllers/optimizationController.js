@@ -1,5 +1,4 @@
-
-const db = require('../config/db');
+const { pool } = require('../config/database');
 
 // Mock API call to optimization service
 const mockOptimizeRouteCall = async (origin, destination, waypoints) => {
@@ -66,7 +65,7 @@ exports.optimizeRoute = async (req, res) => {
   
   try {
     // Get ride details
-    const [rides] = await db.query(
+    const [rides] = await pool.query(
       'SELECT * FROM rides WHERE id = ?',
       [ride_id]
     );
@@ -78,7 +77,7 @@ exports.optimizeRoute = async (req, res) => {
     const ride = rides[0];
     
     // Get existing stops
-    const [stops] = await db.query(
+    const [stops] = await pool.query(
       'SELECT * FROM ride_stops WHERE ride_id = ? ORDER BY stop_order',
       [ride_id]
     );
@@ -95,14 +94,14 @@ exports.optimizeRoute = async (req, res) => {
     );
     
     // Save optimization results
-    const [existingOptimization] = await db.query(
+    const [existingOptimization] = await pool.query(
       'SELECT * FROM ride_optimization WHERE ride_id = ?',
       [ride_id]
     );
     
     if (existingOptimization.length > 0) {
       // Update existing optimization
-      await db.query(
+      await pool.query(
         `UPDATE ride_optimization SET 
         original_route = ?, 
         optimized_route = ?, 
@@ -123,7 +122,7 @@ exports.optimizeRoute = async (req, res) => {
       );
     } else {
       // Create new optimization record
-      await db.query(
+      await pool.query(
         `INSERT INTO ride_optimization (
           ride_id, 
           original_route, 
@@ -149,7 +148,7 @@ exports.optimizeRoute = async (req, res) => {
     const carbonFootprint = parseFloat(optimizationResult.optimization_stats.co2_reduced);
     
     // Update ride with carbon footprint
-    await db.query(
+    await pool.query(
       'UPDATE rides SET carbon_footprint = ? WHERE id = ?',
       [carbonFootprint, ride_id]
     );
@@ -171,7 +170,7 @@ exports.getOptimizedRoute = async (req, res) => {
   
   try {
     // Get optimization data
-    const [optimization] = await db.query(
+    const [optimization] = await pool.query(
       'SELECT * FROM ride_optimization WHERE ride_id = ?',
       [ride_id]
     );
@@ -200,7 +199,7 @@ exports.getCarbonFootprint = async (req, res) => {
   const { ride_id } = req.params;
   
   try {
-    const [rides] = await db.query(
+    const [rides] = await pool.query(
       'SELECT carbon_footprint, distance_km FROM rides WHERE id = ?',
       [ride_id]
     );
@@ -216,7 +215,7 @@ exports.getCarbonFootprint = async (req, res) => {
       // Average car emits about 0.2 kg CO2 per km
       const carbonFootprint = ride.distance_km * 0.2;
       
-      await db.query(
+      await pool.query(
         'UPDATE rides SET carbon_footprint = ? WHERE id = ?',
         [carbonFootprint, ride_id]
       );
@@ -225,7 +224,7 @@ exports.getCarbonFootprint = async (req, res) => {
     }
     
     // Get optimization if available
-    const [optimization] = await db.query(
+    const [optimization] = await pool.query(
       'SELECT fuel_saved FROM ride_optimization WHERE ride_id = ?',
       [ride_id]
     );
@@ -304,7 +303,7 @@ exports.getWeatherData = async (req, res) => {
   
   try {
     // Check if we have recent weather data for this city
-    const [existingData] = await db.query(
+    const [existingData] = await pool.query(
       'SELECT * FROM weather_data WHERE city = ? AND recorded_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)',
       [city]
     );
@@ -360,7 +359,7 @@ exports.getWeatherData = async (req, res) => {
     }
     
     // Save weather data to database
-    const [result] = await db.query(
+    const [result] = await pool.query(
       `INSERT INTO weather_data (
         city, weather_condition, temperature, precipitation, wind_speed, surge_multiplier
       ) VALUES (?, ?, ?, ?, ?, ?)`,

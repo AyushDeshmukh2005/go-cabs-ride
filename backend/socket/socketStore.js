@@ -1,62 +1,93 @@
 
-// In-memory store for socket connections
-const socketStore = {
-  // Map of socketId -> { userId, role }
-  socketToUser: new Map(),
-  // Map of userId -> socketId
-  userToSocket: new Map()
+// Store for mapping user IDs to socket IDs
+
+// Maps: userId -> socketId
+const userSocketMap = new Map();
+
+// Maps: socketId -> userId
+const socketUserMap = new Map();
+
+/**
+ * Add a socket to the store
+ * @param {string} userId - The user ID
+ * @param {string} socketId - The socket ID
+ */
+exports.addSocket = (userId, socketId) => {
+  userSocketMap.set(userId.toString(), socketId);
+  socketUserMap.set(socketId, userId.toString());
 };
 
-// Add a user to the socket store
-const addUserToSocket = (socketId, userId, role) => {
-  socketStore.socketToUser.set(socketId, { userId, role });
-  socketStore.userToSocket.set(userId, socketId);
-};
-
-// Remove a user from the socket store
-const removeUserFromSocket = (socketId) => {
-  const user = socketStore.socketToUser.get(socketId);
-  if (user) {
-    socketStore.userToSocket.delete(user.userId);
-    socketStore.socketToUser.delete(socketId);
+/**
+ * Remove a socket by socket ID
+ * @param {string} socketId - The socket ID to remove
+ */
+exports.removeSocketId = (socketId) => {
+  const userId = socketUserMap.get(socketId);
+  if (userId) {
+    userSocketMap.delete(userId);
   }
+  socketUserMap.delete(socketId);
 };
 
-// Get a user by socket ID
-const getUsersBySocketId = (socketId) => {
-  return socketStore.socketToUser.get(socketId);
+/**
+ * Remove a socket by user ID
+ * @param {string} userId - The user ID to remove
+ */
+exports.removeUserId = (userId) => {
+  const socketId = userSocketMap.get(userId.toString());
+  if (socketId) {
+    socketUserMap.delete(socketId);
+  }
+  userSocketMap.delete(userId.toString());
 };
 
-// Get socket ID by user ID
-const getSocketIdByUserId = (userId) => {
-  return socketStore.userToSocket.get(userId);
+/**
+ * Get socket ID by user ID
+ * @param {string} userId - The user ID to look up
+ * @returns {string|undefined} The socket ID if found
+ */
+exports.getSocketIdByUserId = (userId) => {
+  return userSocketMap.get(userId.toString());
 };
 
-// Get all connected drivers
-const getAllConnectedDrivers = () => {
-  const drivers = [];
-  socketStore.socketToUser.forEach((user, socketId) => {
-    if (user.role === 'driver') {
-      drivers.push({ socketId, userId: user.userId });
-    }
-  });
-  return drivers;
+/**
+ * Get user ID by socket ID
+ * @param {string} socketId - The socket ID to look up
+ * @returns {string|undefined} The user ID if found
+ */
+exports.getUserIdBySocketId = (socketId) => {
+  return socketUserMap.get(socketId);
 };
 
-// Get all connected users
-const getAllConnectedUsers = () => {
-  return Array.from(socketStore.socketToUser.entries()).map(([socketId, user]) => ({
-    socketId,
-    userId: user.userId,
-    role: user.role
-  }));
+/**
+ * Check if a user is connected
+ * @param {string} userId - The user ID to check
+ * @returns {boolean} True if the user has a socket connection
+ */
+exports.isUserConnected = (userId) => {
+  return userSocketMap.has(userId.toString());
 };
 
-module.exports = {
-  addUserToSocket,
-  removeUserFromSocket,
-  getUsersBySocketId,
-  getSocketIdByUserId,
-  getAllConnectedDrivers,
-  getAllConnectedUsers
+/**
+ * Get all connected users
+ * @returns {string[]} Array of user IDs
+ */
+exports.getAllConnectedUsers = () => {
+  return Array.from(userSocketMap.keys());
+};
+
+/**
+ * Get all active socket IDs
+ * @returns {string[]} Array of socket IDs
+ */
+exports.getAllActiveSockets = () => {
+  return Array.from(socketUserMap.keys());
+};
+
+/**
+ * Get the number of connected users
+ * @returns {number} Count of connected users
+ */
+exports.getConnectedUsersCount = () => {
+  return userSocketMap.size;
 };

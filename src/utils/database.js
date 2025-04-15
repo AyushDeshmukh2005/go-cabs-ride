@@ -6,24 +6,24 @@ import { enableMockMode } from "@/services/api";
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 class DatabaseConnection {
-  private static instance: DatabaseConnection;
-  private connected: boolean = false;
-  private connectionAttempts: number = 0;
-  private readonly MAX_RETRIES = 3;
-  private connectionPromise: Promise<boolean> | null = null;
+  static instance;
+  connected = false;
+  connectionAttempts = 0;
+  MAX_RETRIES = 3;
+  connectionPromise = null;
 
-  private constructor() {
+  constructor() {
     this.initConnection();
   }
 
-  public static getInstance(): DatabaseConnection {
+  static getInstance() {
     if (!DatabaseConnection.instance) {
       DatabaseConnection.instance = new DatabaseConnection();
     }
     return DatabaseConnection.instance;
   }
 
-  private async initConnection(): Promise<boolean> {
+  async initConnection() {
     try {
       this.connectionAttempts++;
       console.log(`Attempting database connection (Attempt ${this.connectionAttempts}/${this.MAX_RETRIES})`);
@@ -71,11 +71,11 @@ class DatabaseConnection {
     }
   }
 
-  public isConnected(): boolean {
+  isConnected() {
     return this.connected;
   }
 
-  public async ensureConnected(): Promise<boolean> {
+  async ensureConnected() {
     if (this.connectionPromise) {
       return this.connectionPromise;
     }
@@ -90,7 +90,7 @@ class DatabaseConnection {
     return result;
   }
 
-  public async reconnect(): Promise<boolean> {
+  async reconnect() {
     if (!this.isConnected()) {
       console.log('Attempting to reconnect to the database...');
       this.connectionAttempts = 0; // Reset attempts counter for reconnection
@@ -105,7 +105,7 @@ class DatabaseConnection {
 const dbConnection = DatabaseConnection.getInstance();
 
 // Utility function to check database connection
-export const checkDatabaseConnection = async (): Promise<boolean> => {
+export const checkDatabaseConnection = async () => {
   if (!dbConnection.isConnected()) {
     console.log('Database connection is not active. Attempting to reconnect...');
     return await dbConnection.ensureConnected();

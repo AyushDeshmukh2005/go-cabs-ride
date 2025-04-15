@@ -1,11 +1,12 @@
 
-const db = require('../config/db');
-const { io } = require('../server');
+const { pool } = require('../config/database');
+const { io } = global;
+const socketStore = require('../socket/socketStore');
 
 // Get user's emergency contacts
 exports.getUserEmergencyContacts = async (req, res) => {
   try {
-    const [contacts] = await db.query(
+    const [contacts] = await pool.query(
       'SELECT * FROM emergency_contacts WHERE user_id = ?',
       [req.user.id]
     );
@@ -26,12 +27,12 @@ exports.addEmergencyContact = async (req, res) => {
   }
   
   try {
-    const [result] = await db.query(
+    const [result] = await pool.query(
       'INSERT INTO emergency_contacts (user_id, contact_name, contact_phone, contact_relationship) VALUES (?, ?, ?, ?)',
       [req.user.id, contact_name, contact_phone, contact_relationship]
     );
     
-    const [newContact] = await db.query(
+    const [newContact] = await pool.query(
       'SELECT * FROM emergency_contacts WHERE id = ?',
       [result.insertId]
     );
@@ -50,7 +51,7 @@ exports.updateEmergencyContact = async (req, res) => {
   
   try {
     // Verify ownership
-    const [contactCheck] = await db.query(
+    const [contactCheck] = await pool.query(
       'SELECT * FROM emergency_contacts WHERE id = ? AND user_id = ?',
       [id, req.user.id]
     );
@@ -60,12 +61,12 @@ exports.updateEmergencyContact = async (req, res) => {
     }
     
     // Update the contact
-    await db.query(
+    await pool.query(
       'UPDATE emergency_contacts SET contact_name = ?, contact_phone = ?, contact_relationship = ? WHERE id = ?',
       [contact_name, contact_phone, contact_relationship, id]
     );
     
-    const [updatedContact] = await db.query(
+    const [updatedContact] = await pool.query(
       'SELECT * FROM emergency_contacts WHERE id = ?',
       [id]
     );
@@ -83,7 +84,7 @@ exports.deleteEmergencyContact = async (req, res) => {
   
   try {
     // Verify ownership
-    const [contactCheck] = await db.query(
+    const [contactCheck] = await pool.query(
       'SELECT * FROM emergency_contacts WHERE id = ? AND user_id = ?',
       [id, req.user.id]
     );
@@ -93,7 +94,7 @@ exports.deleteEmergencyContact = async (req, res) => {
     }
     
     // Delete the contact
-    await db.query(
+    await pool.query(
       'DELETE FROM emergency_contacts WHERE id = ?',
       [id]
     );
@@ -115,7 +116,7 @@ exports.sendSOSAlert = async (req, res) => {
   
   try {
     // Check if the ride exists and the user is part of it
-    const [rideCheck] = await db.query(
+    const [rideCheck] = await pool.query(
       'SELECT * FROM rides WHERE id = ? AND (rider_id = ? OR driver_id = ?)',
       [ride_id, req.user.id, req.user.id]
     );
@@ -125,7 +126,7 @@ exports.sendSOSAlert = async (req, res) => {
     }
     
     // Log the emergency alert
-    const [alertResult] = await db.query(
+    const [alertResult] = await pool.query(
       'INSERT INTO activity_logs (user_id, activity_type, description) VALUES (?, ?, ?)',
       [
         req.user.id,
@@ -156,14 +157,14 @@ exports.sendSOSAlert = async (req, res) => {
     });
     
     // Notify emergency contacts (mock implementation - in a real app, this would send SMS or push notifications)
-    const [contacts] = await db.query(
+    const [contacts] = await pool.query(
       'SELECT * FROM emergency_contacts WHERE user_id = ?',
       [req.user.id]
     );
     
     // Log notification to emergency contacts
     if (contacts.length > 0) {
-      await db.query(
+      await pool.query(
         'INSERT INTO activity_logs (user_id, activity_type, description) VALUES (?, ?, ?)',
         [
           req.user.id,
@@ -194,7 +195,7 @@ exports.requestDriverSwap = async (req, res) => {
   
   try {
     // Check if the ride exists and the user is part of it
-    const [rideCheck] = await db.query(
+    const [rideCheck] = await pool.query(
       'SELECT * FROM rides WHERE id = ? AND (rider_id = ? OR driver_id = ?)',
       [ride_id, req.user.id, req.user.id]
     );
@@ -209,7 +210,7 @@ exports.requestDriverSwap = async (req, res) => {
     }
     
     // Log the swap request
-    await db.query(
+    await pool.query(
       'INSERT INTO activity_logs (user_id, activity_type, description) VALUES (?, ?, ?)',
       [
         req.user.id,
@@ -231,7 +232,7 @@ exports.requestDriverSwap = async (req, res) => {
     });
     
     // Notify the current driver
-    const driverSocketId = require('../socket/socketStore').getSocketIdByUserId(rideCheck[0].driver_id);
+    const driverSocketId = socketStore.getSocketIdByUserId(rideCheck[0].driver_id);
     if (driverSocketId) {
       io.to(driverSocketId).emit('ride_update', {
         type: 'swap_requested',

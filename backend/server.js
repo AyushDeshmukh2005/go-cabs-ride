@@ -8,11 +8,27 @@ const { initializeDatabase } = require('./config/database');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const rideRoutes = require('./routes/rides');
+const emergencyRoutes = require('./routes/emergency');
+const optimizationRoutes = require('./routes/optimization');
+const subscriptionRoutes = require('./routes/subscriptions');
 const { verifyToken } = require('./middleware/auth');
 const path = require('path');
+const socketIo = require('socket.io');
+const socketHandler = require('./socket/socketHandler');
+const socketStore = require('./socket/socketStore');
 
 const app = express();
 const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: process.env.SOCKET_CORS_ORIGIN || 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+    credentials: true
+  }
+});
+
+// Make io available globally
+global.io = io;
 
 // Initialize database on server start
 initializeDatabase().then(success => {
@@ -36,10 +52,49 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/auth', authRoutes);
 app.use('/api/users', verifyToken, userRoutes);
 app.use('/api/rides', verifyToken, rideRoutes);
+app.use('/api/emergency', verifyToken, emergencyRoutes);
+app.use('/api/optimization', verifyToken, optimizationRoutes);
+app.use('/api/subscriptions', subscriptionRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'UP', message: 'Server is running' });
+});
+
+// API health check
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'UP', message: 'API is running' });
+});
+
+// Setup Socket.IO
+io.on('connection', (socket) => {
+  console.log('New client connected:', socket.id);
+  
+  // Store socket information
+  socket.on('authenticate', (userData) => {
+    if (userData && userData.id) {
+      socketStore.addSocket(userData.id, socket.id);
+      console.log(`User ${userData.id} authenticated with socket ${socket.id}`);
+      
+      // Join user-specific room
+      socket.join(`user_${userData.id}`);
+      
+      // Join role-specific room (e.g., 'driver', 'rider', 'admin')
+      if (userData.role) {
+        socket.join(userData.role);
+        console.log(`User joined ${userData.role} room`);
+      }
+    }
+  });
+  
+  // Setup other socket event handlers
+  socketHandler.setupEventHandlers(socket, io);
+  
+  // Handle disconnect
+  socket.on('disconnect', () => {
+    console.log('Client disconnected:', socket.id);
+    socketStore.removeSocketId(socket.id);
+  });
 });
 
 // 404 handler
@@ -62,4 +117,4 @@ server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-module.exports = { app, server };
+module.exports = { app, server, io };
