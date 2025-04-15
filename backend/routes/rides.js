@@ -1,9 +1,10 @@
 
-const express = require('express');
+import express from 'express';
+import { verifyToken } from '../middleware/auth.js';
+import * as rideService from '../services/rideService.js';
+import { validate, rideSchemas } from '../middleware/validation.js';
+
 const router = express.Router();
-const { verifyToken } = require('../middleware/auth');
-const rideService = require('../services/rideService');
-const { validate, rideSchemas } = require('../middleware/validation');
 
 // Apply auth middleware to all ride routes
 router.use(verifyToken);
@@ -104,4 +105,4 @@ router.post('/:id/rating', validate(rideSchemas.rateRide), async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

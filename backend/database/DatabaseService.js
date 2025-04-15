@@ -1,6 +1,8 @@
 
-const mysql = require('mysql2/promise');
-require('dotenv').config();
+import mysql from 'mysql2/promise';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 class DatabaseService {
   static instance;
@@ -41,6 +43,11 @@ class DatabaseService {
       return true;
     } catch (error) {
       console.error('Error connecting to MySQL database:', error);
+      console.error('DB Configuration:', {
+        host: process.env.DB_HOST || 'localhost',
+        user: process.env.DB_USER || 'root',
+        database: process.env.DB_NAME || 'gocabs',
+      });
       return false;
     }
   }
@@ -51,6 +58,8 @@ class DatabaseService {
       return results;
     } catch (error) {
       console.error('Error executing query:', error);
+      console.error('Query:', sql);
+      console.error('Params:', params);
       throw error;
     }
   }
@@ -60,4 +69,4 @@ class DatabaseService {
   }
 }
 
-module.exports = DatabaseService;
+export default DatabaseService;

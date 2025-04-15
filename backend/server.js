@@ -1,21 +1,26 @@
 
-require('dotenv').config();
-const express = require('express');
-const http = require('http');
-const cors = require('cors');
-const morgan = require('morgan');
-const { initializeDatabase } = require('./config/database');
-const authRoutes = require('./routes/auth');
-const userRoutes = require('./routes/users');
-const rideRoutes = require('./routes/rides');
-const emergencyRoutes = require('./routes/emergency');
-const optimizationRoutes = require('./routes/optimization');
-const subscriptionRoutes = require('./routes/subscriptions');
-const { verifyToken } = require('./middleware/auth');
-const path = require('path');
-const socketIo = require('socket.io');
-const socketHandler = require('./socket/socketHandler');
-const socketStore = require('./socket/socketStore');
+import 'dotenv/config';
+import express from 'express';
+import http from 'http';
+import cors from 'cors';
+import morgan from 'morgan';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import socketIo from 'socket.io';
+import { initializeDatabase } from './config/database.js';
+import authRoutes from './routes/auth.js';
+import userRoutes from './routes/users.js';
+import rideRoutes from './routes/rides.js';
+import emergencyRoutes from './routes/emergency.js';
+import optimizationRoutes from './routes/optimization.js';
+import subscriptionRoutes from './routes/subscriptions.js';
+import { verifyToken } from './middleware/auth.js';
+import socketHandler from './socket/socketHandler.js';
+import * as socketStore from './socket/socketStore.js';
+
+// Get the directory name using ESM compatible approach
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 const server = http.createServer(app);
@@ -46,7 +51,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
 // Static files
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(join(__dirname, 'uploads')));
 
 // API Routes
 app.use('/api/auth', authRoutes);
@@ -117,4 +122,4 @@ server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-module.exports = { app, server, io };
+export { app, server, io };

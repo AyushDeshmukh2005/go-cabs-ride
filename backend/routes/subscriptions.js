@@ -1,8 +1,9 @@
 
-const express = require('express');
+import express from 'express';
+import * as subscriptionController from '../controllers/subscriptionController.js';
+import { verifyToken, isAdmin } from '../middleware/auth.js';
+
 const router = express.Router();
-const subscriptionController = require('../controllers/subscriptionController');
-const { verifyToken, isAdmin } = require('../middleware/auth');
 
 // Get all subscription plans (public)
 router.get('/plans', subscriptionController.getAllPlans);
@@ -20,4 +21,4 @@ router.post('/admin/plans', subscriptionController.createPlan);
 router.put('/admin/plans/:id', subscriptionController.updatePlan);
 router.delete('/admin/plans/:id', subscriptionController.deletePlan);
 
-module.exports = router;
+export default router;

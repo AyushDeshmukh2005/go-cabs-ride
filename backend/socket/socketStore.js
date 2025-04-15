@@ -12,7 +12,7 @@ const socketUserMap = new Map();
  * @param {string} userId - The user ID
  * @param {string} socketId - The socket ID
  */
-exports.addSocket = (userId, socketId) => {
+export const addSocket = (userId, socketId) => {
   userSocketMap.set(userId.toString(), socketId);
   socketUserMap.set(socketId, userId.toString());
 };
@@ -21,7 +21,7 @@ exports.addSocket = (userId, socketId) => {
  * Remove a socket by socket ID
  * @param {string} socketId - The socket ID to remove
  */
-exports.removeSocketId = (socketId) => {
+export const removeSocketId = (socketId) => {
   const userId = socketUserMap.get(socketId);
   if (userId) {
     userSocketMap.delete(userId);
@@ -33,7 +33,7 @@ exports.removeSocketId = (socketId) => {
  * Remove a socket by user ID
  * @param {string} userId - The user ID to remove
  */
-exports.removeUserId = (userId) => {
+export const removeUserId = (userId) => {
   const socketId = userSocketMap.get(userId.toString());
   if (socketId) {
     socketUserMap.delete(socketId);
@@ -46,7 +46,7 @@ exports.removeUserId = (userId) => {
  * @param {string} userId - The user ID to look up
  * @returns {string|undefined} The socket ID if found
  */
-exports.getSocketIdByUserId = (userId) => {
+export const getSocketIdByUserId = (userId) => {
   return userSocketMap.get(userId.toString());
 };
 
@@ -55,7 +55,7 @@ exports.getSocketIdByUserId = (userId) => {
  * @param {string} socketId - The socket ID to look up
  * @returns {string|undefined} The user ID if found
  */
-exports.getUserIdBySocketId = (socketId) => {
+export const getUserIdBySocketId = (socketId) => {
   return socketUserMap.get(socketId);
 };
 
@@ -64,7 +64,7 @@ exports.getUserIdBySocketId = (socketId) => {
  * @param {string} userId - The user ID to check
  * @returns {boolean} True if the user has a socket connection
  */
-exports.isUserConnected = (userId) => {
+export const isUserConnected = (userId) => {
   return userSocketMap.has(userId.toString());
 };
 
@@ -72,7 +72,7 @@ exports.isUserConnected = (userId) => {
  * Get all connected users
  * @returns {string[]} Array of user IDs
  */
-exports.getAllConnectedUsers = () => {
+export const getAllConnectedUsers = () => {
   return Array.from(userSocketMap.keys());
 };
 
@@ -80,7 +80,7 @@ exports.getAllConnectedUsers = () => {
  * Get all active socket IDs
  * @returns {string[]} Array of socket IDs
  */
-exports.getAllActiveSockets = () => {
+export const getAllActiveSockets = () => {
   return Array.from(socketUserMap.keys());
 };
 
@@ -88,6 +88,6 @@ exports.getAllActiveSockets = () => {
  * Get the number of connected users
  * @returns {number} Count of connected users
  */
-exports.getConnectedUsersCount = () => {
+export const getConnectedUsersCount = () => {
   return userSocketMap.size;
 };

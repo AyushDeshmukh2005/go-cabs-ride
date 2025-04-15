@@ -1,6 +1,8 @@
 
-const mysql = require('mysql2/promise');
-require('dotenv').config();
+import mysql from 'mysql2/promise';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 // Create a connection pool
 const pool = mysql.createPool({
@@ -14,10 +16,15 @@ const pool = mysql.createPool({
 });
 
 // Test the connection
-const testConnection = async () => {
+export const testConnection = async () => {
   try {
     const connection = await pool.getConnection();
     console.log('Connected to MySQL database successfully!');
+    console.log('Using configuration:', {
+      host: process.env.DB_HOST || 'localhost',
+      user: process.env.DB_USER || 'root',
+      database: process.env.DB_NAME || 'gocabs'
+    });
     connection.release();
     return true;
   } catch (error) {
@@ -32,7 +39,7 @@ const testConnection = async () => {
 };
 
 // Initialize database - create tables if they don't exist
-const initializeDatabase = async () => {
+export const initializeDatabase = async () => {
   try {
     // Check connection first
     const isConnected = await testConnection();
@@ -143,6 +150,32 @@ const initializeDatabase = async () => {
       )
     `);
     
+    // Create emergency_contacts table if it doesn't exist
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS emergency_contacts (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        contact_name VARCHAR(100) NOT NULL,
+        contact_phone VARCHAR(20) NOT NULL,
+        contact_relationship VARCHAR(50),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      )
+    `);
+    
+    // Create activity_logs table if it doesn't exist
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS activity_logs (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT,
+        activity_type VARCHAR(50) NOT NULL,
+        description TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+      )
+    `);
+    
     console.log('Database initialized successfully!');
     return true;
   } catch (error) {
@@ -152,7 +185,7 @@ const initializeDatabase = async () => {
 };
 
 // Utility function to handle DB query errors with proper logging
-const executeQuery = async (query, params = []) => {
+export const executeQuery = async (query, params = []) => {
   try {
     const [results] = await pool.query(query, params);
     return results;
@@ -164,9 +197,4 @@ const executeQuery = async (query, params = []) => {
   }
 };
 
-module.exports = {
-  pool,
-  testConnection,
-  initializeDatabase,
-  executeQuery
-};
+export { pool };

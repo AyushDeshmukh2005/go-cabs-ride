@@ -2,8 +2,8 @@
 import { toast } from "@/hooks/use-toast";
 import { enableMockMode } from "@/services/api";
 
-// Use Vite's import.meta.env instead of process.env
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Use Vite's import.meta.env instead of process.env and adjust the API URL
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 class DatabaseConnection {
   static instance;
@@ -42,7 +42,7 @@ class DatabaseConnection {
         enableMockMode(false); // Disable mock mode when connected
         return true;
       } else {
-        throw new Error('Failed to connect to database');
+        throw new Error(`Failed to connect to database: ${response.status} ${response.statusText}`);
       }
     } catch (error) {
       console.error('Database connection error:', error);
@@ -96,7 +96,7 @@ class DatabaseConnection {
       this.connectionAttempts = 0; // Reset attempts counter for reconnection
       return this.initConnection();
     } else {
-      console.log('Database is already connected.');
+      console.log('Database connection is already connected.');
       return true;
     }
   }

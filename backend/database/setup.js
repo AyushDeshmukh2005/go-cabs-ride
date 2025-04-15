@@ -1,6 +1,8 @@
 
-const { pool, initializeDatabase } = require('../config/database');
-require('dotenv').config();
+import { pool, initializeDatabase } from '../config/database.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const setupDatabase = async () => {
   console.log('Starting database setup...');
@@ -26,8 +28,8 @@ const setupDatabase = async () => {
 };
 
 // Run the setup if this file is executed directly
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   setupDatabase();
 }
 
-module.exports = setupDatabase;
+export default setupDatabase;

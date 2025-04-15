@@ -1,8 +1,9 @@
 
-const express = require('express');
+import express from 'express';
+import * as authController from '../controllers/authController.js';
+import { validate, authSchemas } from '../middleware/validation.js';
+
 const router = express.Router();
-const authController = require('../controllers/authController');
-const { validate, authSchemas } = require('../middleware/validation');
 
 // Register a new user
 router.post('/register', validate(authSchemas.register), authController.register);
@@ -19,4 +20,4 @@ router.post('/reset-password-request', authController.resetPasswordRequest);
 // Reset password
 router.post('/reset-password/:token', authController.resetPassword);
 
-module.exports = router;
+export default router;

@@ -1,8 +1,9 @@
 
-const express = require('express');
+import express from 'express';
+import * as emergencyController from '../controllers/emergencyController.js';
+import { verifyToken } from '../middleware/auth.js';
+
 const router = express.Router();
-const emergencyController = require('../controllers/emergencyController');
-const { verifyToken } = require('../middleware/auth');
 
 // Apply auth middleware to all emergency routes
 router.use(verifyToken);
@@ -17,4 +18,4 @@ router.delete('/contacts/:id', emergencyController.deleteEmergencyContact);
 router.post('/sos', emergencyController.sendSOSAlert);
 router.post('/driver-swap', emergencyController.requestDriverSwap);
 
-module.exports = router;
+export default router;

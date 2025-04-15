@@ -16,9 +16,21 @@ export default defineConfig(({ mode }) => {
       port: 8080,
       proxy: {
         '/api': {
-          target: 'http://localhost:5000',
+          target: env.VITE_BACKEND_URL || 'http://localhost:5000',
           changeOrigin: true,
           secure: false,
+          rewrite: (path) => path.replace(/^\/api/, '/api')
+        },
+        '/health': {
+          target: env.VITE_BACKEND_URL || 'http://localhost:5000',
+          changeOrigin: true,
+          secure: false,
+        },
+        '/socket.io': {
+          target: env.VITE_SOCKET_URL || 'http://localhost:5000',
+          changeOrigin: true,
+          secure: false,
+          ws: true,
         }
       }
     },
@@ -34,7 +46,7 @@ export default defineConfig(({ mode }) => {
     // Define environment variables that will be statically replaced
     define: {
       // Provide fallbacks for required environment variables
-      'import.meta.env.VITE_API_URL': JSON.stringify(env.VITE_API_URL || 'http://localhost:5000/api'),
+      'import.meta.env.VITE_API_URL': JSON.stringify(env.VITE_API_URL || '/api'),
       'import.meta.env.VITE_SOCKET_URL': JSON.stringify(env.VITE_SOCKET_URL || 'http://localhost:5000'),
       'import.meta.env.VITE_GOOGLE_MAPS_API_KEY': JSON.stringify(env.VITE_GOOGLE_MAPS_API_KEY || ''),
     }
