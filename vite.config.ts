@@ -19,18 +19,39 @@ export default defineConfig(({ mode }) => {
           target: env.VITE_BACKEND_URL || 'http://localhost:5000',
           changeOrigin: true,
           secure: false,
-          rewrite: (path) => path.replace(/^\/api/, '/api')
+          rewrite: (path) => path.replace(/^\/api/, '/api'),
+          // Add timeouts to prevent hanging connections
+          configure: (proxy, _options) => {
+            proxy.on('error', (err, _req, _res) => {
+              console.log('Proxy error:', err);
+            });
+            proxy.on('proxyReq', (proxyReq, req, _res) => {
+              console.log('Proxying:', req.method, req.url);
+            });
+          }
         },
         '/health': {
           target: env.VITE_BACKEND_URL || 'http://localhost:5000',
           changeOrigin: true,
           secure: false,
+          // Add timeouts to prevent hanging connections
+          configure: (proxy, _options) => {
+            proxy.on('error', (err, _req, _res) => {
+              console.log('Health check proxy error:', err);
+            });
+          }
         },
         '/socket.io': {
           target: env.VITE_SOCKET_URL || 'http://localhost:5000',
           changeOrigin: true,
           secure: false,
           ws: true,
+          // Add timeouts to prevent hanging connections
+          configure: (proxy, _options) => {
+            proxy.on('error', (err, _req, _res) => {
+              console.log('WebSocket proxy error:', err);
+            });
+          }
         }
       }
     },
@@ -49,6 +70,26 @@ export default defineConfig(({ mode }) => {
       'import.meta.env.VITE_API_URL': JSON.stringify(env.VITE_API_URL || '/api'),
       'import.meta.env.VITE_SOCKET_URL': JSON.stringify(env.VITE_SOCKET_URL || 'http://localhost:5000'),
       'import.meta.env.VITE_GOOGLE_MAPS_API_KEY': JSON.stringify(env.VITE_GOOGLE_MAPS_API_KEY || ''),
+    },
+    // Improve build performance
+    build: {
+      sourcemap: mode !== 'production',
+      // Improve chunk splitting
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ['react', 'react-dom', 'react-router-dom'],
+            ui: [
+              '@radix-ui/react-dialog',
+              '@radix-ui/react-dropdown-menu',
+              '@radix-ui/react-label',
+              '@radix-ui/react-tabs',
+              '@radix-ui/react-toast',
+              'lucide-react',
+            ],
+          }
+        }
+      }
     }
   };
 });

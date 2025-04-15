@@ -1,106 +1,116 @@
 
-# GoCabs - Modern Ride-Hailing Platform
+# GoCabs Ride-Sharing Application
 
-GoCabs is a premium ride-hailing platform that offers advanced features for both riders and drivers. This project includes a complete frontend and backend implementation.
+A comprehensive ride-sharing platform with both rider and driver interfaces, real-time location tracking, payment processing, and admin management features.
 
 ## Features
 
-- 🚗 Multi-stop rides
-- 💰 Fare negotiation
-- ⭐ Favorite drivers
-- 🚨 Emergency features
-- 🌿 Carbon footprint tracking
-- 🎵 Ride preferences
-- 👥 Ride pooling
-- 🔒 Advanced security
-- 📱 Mobile-friendly design
-- 🌓 Light/Dark mode
+- User authentication (riders, drivers, admins)
+- Real-time ride tracking
+- Subscription management
+- Emergency contact system
+- Optimized routing
+- Payment processing
+- Admin dashboard
 
 ## Prerequisites
 
-- Node.js (v14.x or higher)
-- MySQL (v8.x or higher)
+- Node.js (v16 or higher)
+- MySQL (v8.0 or higher)
 - npm or yarn
 
-## Project Structure
-
-```
-/
-├── backend/               # Backend Node.js/Express server
-│   ├── config/            # Configuration files
-│   ├── controllers/       # Request handlers
-│   ├── database/          # Database scripts and models
-│   ├── middleware/        # Express middleware
-│   ├── routes/            # API routes
-│   └── socket/            # Socket.io real-time features
-├── src/                   # Frontend React application
-│   ├── components/        # Reusable UI components
-│   ├── pages/             # Application pages
-│   ├── hooks/             # Custom React hooks
-│   ├── lib/               # Utility functions
-│   └── context/           # React context providers
-└── database/              # Database schema and migrations
-```
-
-## Getting Started
+## Setup Instructions
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/gocabs.git
+git clone <repository-url>
 cd gocabs
 ```
 
-### 2. Install dependencies
+### 2. Environment Setup
+
+Copy the example environment file:
 
 ```bash
-# Install backend dependencies
-cd backend
-npm install
-
-# Install frontend dependencies
-cd ../
-npm install
-```
-
-### 3. Set up environment variables
-
-```bash
-# Backend environment variables
-cd backend
 cp .env.example .env
-# Edit .env with your database credentials and other settings
 ```
 
-### 4. Set up database
+Edit the `.env` file with your local configuration, particularly:
+- Database credentials
+- JWT secret key
+- Google Maps API key (if using location features)
 
-Create a MySQL database named `gocabs` (or your preferred name, but update .env accordingly).
+### 3. Database Setup
+
+Make sure MySQL is running, then run:
 
 ```bash
-# Initialize the database with the schema
-cd backend
 npm run setup-db
 ```
 
-### 5. Start the development servers
+This will create the database and initialize all required tables.
+
+### 4. Install Dependencies
 
 ```bash
-# Start backend server (from backend directory)
-cd backend
-npm run dev
+npm install
+```
 
-# In a new terminal, start frontend development server (from project root)
+### 5. Start the Backend Server
+
+```bash
+cd backend
 npm run dev
 ```
 
-## API Documentation
+The server will start on port 5000 (or as specified in your .env file).
 
-The API endpoints are documented using Swagger and can be accessed at `http://localhost:5000/api-docs` when the backend server is running.
+### 6. Start the Frontend Development Server
 
-## Contributing
+```bash
+npm run dev
+```
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+The frontend will be available at http://localhost:8080
+
+## Project Structure
+
+- `backend/` - Server-side code
+  - `config/` - Configuration files and database setup
+  - `controllers/` - API endpoint controllers
+  - `middleware/` - Express middleware
+  - `routes/` - API route definitions
+  - `socket/` - Socket.IO for real-time communication
+  - `database/` - Database setup and utilities
+  
+- `src/` - Frontend code
+  - `components/` - Reusable React components
+  - `pages/` - Page components
+  - `hooks/` - Custom React hooks
+  - `utils/` - Utility functions
+  - `services/` - API services
+
+## Troubleshooting
+
+### Database Connection Issues
+
+- Ensure MySQL is running on the configured host and port
+- Verify database credentials in the .env file
+- Check firewall settings if connecting to a remote database
+
+### Server Won't Start
+
+- Check for port conflicts
+- Ensure all required environment variables are set
+- Look for errors in the console output
+
+## Development Notes
+
+- The backend uses ES modules rather than CommonJS
+- Socket.IO is used for real-time updates
+- Environment variables prefixed with `VITE_` are available in the frontend
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+[License information]

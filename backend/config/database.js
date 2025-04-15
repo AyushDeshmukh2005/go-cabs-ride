@@ -1,40 +1,95 @@
 
 import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
 
-dotenv.config();
+// Get the directory name using ESM compatible approach
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// Create a connection pool
-const pool = mysql.createPool({
+// Load environment variables from .env file
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+
+// Configure database connection options
+const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || '',
   database: process.env.DB_NAME || 'gocabs',
   waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
+  connectionLimit: parseInt(process.env.DB_CONNECTION_LIMIT || '10', 10),
+  queueLimit: 0,
+  connectTimeout: 10000,  // 10 seconds
+  // Enable connection debugging for development
+  debug: process.env.NODE_ENV === 'development' && process.env.DB_DEBUG === 'true' ? ['ComQueryPacket', 'RowDataPacket'] : false
+};
 
-// Test the connection
-export const testConnection = async () => {
-  try {
-    const connection = await pool.getConnection();
-    console.log('Connected to MySQL database successfully!');
-    console.log('Using configuration:', {
-      host: process.env.DB_HOST || 'localhost',
-      user: process.env.DB_USER || 'root',
-      database: process.env.DB_NAME || 'gocabs'
+// Create a connection pool
+const pool = mysql.createPool(dbConfig);
+
+// Enhanced error logger for database operations
+const logDatabaseError = (operation, error, query = null, params = null) => {
+  console.error(`Database ${operation} error:`, error);
+  
+  if (query) {
+    console.error('Query:', query);
+  }
+  
+  if (params) {
+    // Sanitize sensitive data before logging
+    const sanitizedParams = params.map(p => 
+      typeof p === 'string' && (
+        p.toLowerCase().includes('password') || 
+        p.toLowerCase().includes('token') || 
+        p.toLowerCase().includes('secret')
+      ) ? '[REDACTED]' : p
+    );
+    console.error('Params:', sanitizedParams);
+  }
+  
+  // Log connection info for connection errors
+  if (error.code === 'ECONNREFUSED' || error.code === 'ER_ACCESS_DENIED_ERROR') {
+    console.error('Connection failed. Please check:');
+    console.error('1. MySQL server is running');
+    console.error('2. Database credentials are correct');
+    console.error('3. Network connectivity to database server');
+    console.error('Database configuration:', {
+      host: dbConfig.host,
+      user: dbConfig.user,
+      database: dbConfig.database,
     });
-    connection.release();
+  }
+};
+
+// Test the connection with enhanced logging
+export const testConnection = async () => {
+  let connection;
+  try {
+    connection = await pool.getConnection();
+    console.log('Connected to MySQL database successfully!');
+    console.log('Database info:', {
+      host: dbConfig.host,
+      user: dbConfig.user,
+      database: dbConfig.database,
+      connectionLimit: dbConfig.connectionLimit,
+    });
+    
+    // Test a simple query to verify full connectivity
+    const [result] = await connection.query('SELECT 1 as testValue');
+    if (result[0].testValue === 1) {
+      console.log('Database query test successful');
+    }
+    
     return true;
   } catch (error) {
-    console.error('Error connecting to MySQL database:', error);
-    console.error('DB Configuration:', {
-      host: process.env.DB_HOST || 'localhost',
-      user: process.env.DB_USER || 'root',
-      database: process.env.DB_NAME || 'gocabs',
-    });
+    logDatabaseError('connection', error);
     return false;
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 };
 
@@ -48,8 +103,30 @@ export const initializeDatabase = async () => {
       return false;
     }
 
-    // Create tables using the SQL from schema.sql
     console.log('Creating/updating database tables...');
+    
+    // Try to read schema from file first for better maintainability
+    try {
+      const schemaPath = path.resolve(__dirname, '../../database/schema.sql');
+      if (fs.existsSync(schemaPath)) {
+        const schema = fs.readFileSync(schemaPath, 'utf8');
+        // Split the schema by semicolons to execute each statement separately
+        const statements = schema
+          .split(';')
+          .filter(statement => statement.trim())
+          .map(statement => `${statement.trim()};`);
+          
+        for (const statement of statements) {
+          await pool.query(statement);
+        }
+        
+        console.log('Database schema applied from schema.sql file');
+        return true;
+      }
+    } catch (schemaError) {
+      console.error('Error applying schema from file:', schemaError);
+      console.log('Falling back to hardcoded schema...');
+    }
     
     // Create users table if not exists
     await pool.query(`
@@ -179,7 +256,7 @@ export const initializeDatabase = async () => {
     console.log('Database initialized successfully!');
     return true;
   } catch (error) {
-    console.error('Error initializing database:', error);
+    logDatabaseError('initialization', error);
     return false;
   }
 };
@@ -187,14 +264,45 @@ export const initializeDatabase = async () => {
 // Utility function to handle DB query errors with proper logging
 export const executeQuery = async (query, params = []) => {
   try {
+    console.log(`Executing query: ${query.substring(0, 100)}${query.length > 100 ? '...' : ''}`);
+    const startTime = Date.now();
+    
     const [results] = await pool.query(query, params);
+    
+    const duration = Date.now() - startTime;
+    if (duration > 1000) {
+      console.warn(`Slow query detected (${duration}ms): ${query.substring(0, 100)}...`);
+    }
+    
     return results;
   } catch (error) {
-    console.error('Database query error:', error);
-    console.error('Query:', query);
-    console.error('Params:', params);
+    logDatabaseError('query', error, query, params);
     throw error;
   }
 };
+
+// Add a ping method to check if connection is still alive
+export const pingDatabase = async () => {
+  try {
+    await pool.query('SELECT 1');
+    return true;
+  } catch (error) {
+    logDatabaseError('ping', error);
+    return false;
+  }
+};
+
+// Add graceful shutdown
+process.on('SIGINT', async () => {
+  try {
+    console.log('Closing database connection pool...');
+    await pool.end();
+    console.log('Database connection pool closed');
+    process.exit(0);
+  } catch (err) {
+    console.error('Error closing database pool:', err);
+    process.exit(1);
+  }
+});
 
 export { pool };
