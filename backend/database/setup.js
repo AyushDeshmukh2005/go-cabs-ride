@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import mysql from 'mysql2/promise';
 
 // Get the directory name using ESM compatible approach
 const __filename = fileURLToPath(import.meta.url);
