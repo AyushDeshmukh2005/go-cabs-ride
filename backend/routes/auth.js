@@ -1,7 +1,7 @@
 
-import express from 'express';
-import * as authController from '../controllers/authController.js';
-import { validate, authSchemas } from '../middleware/validation.js';
+const express = require('express');
+const authController = require('../controllers/authController');
+const { validate, authSchemas } = require('../middleware/validation');
 
 const router = express.Router();
 
@@ -20,4 +20,4 @@ router.post('/reset-password-request', authController.resetPasswordRequest);
 // Reset password
 router.post('/reset-password/:token', authController.resetPassword);
 
-export default router;
+module.exports = router;

@@ -6,7 +6,7 @@
  * @param {Object} socket - The socket.io socket object
  * @param {Object} io - The socket.io server instance
  */
-export const setupEventHandlers = (socket, io) => {
+const setupEventHandlers = (socket, io) => {
   // Handle ride status updates
   socket.on('join_ride', (rideId) => {
     if (rideId) {
@@ -128,4 +128,6 @@ export const setupEventHandlers = (socket, io) => {
   });
 };
 
-export default { setupEventHandlers };
+module.exports = {
+  setupEventHandlers
+};

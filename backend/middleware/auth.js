@@ -1,9 +1,9 @@
 
-import jwt from 'jsonwebtoken';
-import { pool } from '../config/db.js';
+const jwt = require('jsonwebtoken');
+const { pool } = require('../config/database');
 
 // Verify JWT token
-export const verifyToken = async (req, res, next) => {
+const verifyToken = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
     
@@ -64,7 +64,7 @@ export const verifyToken = async (req, res, next) => {
 };
 
 // Check if user is an admin
-export const isAdmin = (req, res, next) => {
+const isAdmin = (req, res, next) => {
   if (!req.user || req.user.role !== 'admin') {
     return res.status(403).json({ message: 'Access denied. Admin role required.' });
   }
@@ -72,7 +72,7 @@ export const isAdmin = (req, res, next) => {
 };
 
 // Check if user is a driver
-export const isDriver = (req, res, next) => {
+const isDriver = (req, res, next) => {
   if (!req.user || req.user.role !== 'driver') {
     return res.status(403).json({ message: 'Access denied. Driver role required.' });
   }
@@ -80,7 +80,7 @@ export const isDriver = (req, res, next) => {
 };
 
 // Check if user is a rider
-export const isRider = (req, res, next) => {
+const isRider = (req, res, next) => {
   if (!req.user || req.user.role !== 'rider') {
     return res.status(403).json({ message: 'Access denied. Rider role required.' });
   }
@@ -88,7 +88,7 @@ export const isRider = (req, res, next) => {
 };
 
 // Check if user owns the resource or is an admin
-export const isResourceOwnerOrAdmin = (resourceUserId) => {
+const isResourceOwnerOrAdmin = (resourceUserId) => {
   return (req, res, next) => {
     if (!req.user) {
       return res.status(401).json({ message: 'Authentication required' });
@@ -100,4 +100,12 @@ export const isResourceOwnerOrAdmin = (resourceUserId) => {
       return res.status(403).json({ message: 'Access denied. You do not have permission to access this resource.' });
     }
   };
+};
+
+module.exports = {
+  verifyToken,
+  isAdmin,
+  isDriver,
+  isRider,
+  isResourceOwnerOrAdmin
 };

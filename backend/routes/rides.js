@@ -1,8 +1,8 @@
 
-import express from 'express';
-import { verifyToken } from '../middleware/auth.js';
-import * as rideService from '../services/rideService.js';
-import { validate, rideSchemas } from '../middleware/validation.js';
+const express = require('express');
+const { verifyToken } = require('../middleware/auth');
+const rideService = require('../services/rideService');
+const { validate, rideSchemas } = require('../middleware/validation');
 
 const router = express.Router();
 
@@ -105,4 +105,4 @@ router.post('/:id/rating', validate(rideSchemas.rateRide), async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;

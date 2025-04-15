@@ -1,13 +1,8 @@
 
-import mysql from 'mysql2/promise';
-import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import fs from 'fs';
-
-// Get the directory name using ESM compatible approach
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const mysql = require('mysql2/promise');
+const dotenv = require('dotenv');
+const path = require('path');
+const fs = require('fs');
 
 // Load environment variables from .env file
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
@@ -64,7 +59,7 @@ const logDatabaseError = (operation, error, query = null, params = null) => {
 };
 
 // Test the connection with enhanced logging
-export const testConnection = async () => {
+const testConnection = async () => {
   let connection;
   try {
     connection = await pool.getConnection();
@@ -94,7 +89,7 @@ export const testConnection = async () => {
 };
 
 // Initialize database - create tables if they don't exist
-export const initializeDatabase = async () => {
+const initializeDatabase = async () => {
   try {
     // Check connection first
     const isConnected = await testConnection();
@@ -262,7 +257,7 @@ export const initializeDatabase = async () => {
 };
 
 // Utility function to handle DB query errors with proper logging
-export const executeQuery = async (query, params = []) => {
+const executeQuery = async (query, params = []) => {
   try {
     console.log(`Executing query: ${query.substring(0, 100)}${query.length > 100 ? '...' : ''}`);
     const startTime = Date.now();
@@ -282,7 +277,7 @@ export const executeQuery = async (query, params = []) => {
 };
 
 // Add a ping method to check if connection is still alive
-export const pingDatabase = async () => {
+const pingDatabase = async () => {
   try {
     await pool.query('SELECT 1');
     return true;
@@ -305,4 +300,10 @@ process.on('SIGINT', async () => {
   }
 });
 
-export { pool };
+module.exports = {
+  pool,
+  initializeDatabase,
+  testConnection,
+  executeQuery,
+  pingDatabase
+};

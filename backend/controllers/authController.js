@@ -1,11 +1,11 @@
 
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import { pool } from '../config/database.js';
-import crypto from 'crypto';
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const { pool } = require('../config/database');
+const crypto = require('crypto');
 
 // Register a new user
-export const register = async (req, res) => {
+exports.register = async (req, res) => {
   try {
     const { name, email, password, phone, role } = req.body;
 
@@ -58,7 +58,7 @@ export const register = async (req, res) => {
 };
 
 // Login user
-export const login = async (req, res) => {
+exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -125,7 +125,7 @@ export const login = async (req, res) => {
 };
 
 // Verify JWT token
-export const verifyToken = async (req, res) => {
+exports.verifyToken = async (req, res) => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
 
@@ -184,7 +184,7 @@ export const verifyToken = async (req, res) => {
 };
 
 // Request password reset
-export const resetPasswordRequest = async (req, res) => {
+exports.resetPasswordRequest = async (req, res) => {
   try {
     const { email } = req.body;
 
@@ -234,7 +234,7 @@ export const resetPasswordRequest = async (req, res) => {
 };
 
 // Reset password
-export const resetPassword = async (req, res) => {
+exports.resetPassword = async (req, res) => {
   try {
     const { token } = req.params;
     const { password } = req.body;

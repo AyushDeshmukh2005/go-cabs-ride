@@ -1,6 +1,6 @@
 
-import { pool, executeQuery } from '../config/database.js';
-import * as socketStore from '../socket/socketStore.js';
+const { pool } = require('../config/database');
+const socketStore = require('../socket/socketStore');
 
 // Enhanced error handler for controllers
 const handleControllerError = (res, operation, error) => {
@@ -43,7 +43,7 @@ const safeEmit = (io, room, event, data) => {
 };
 
 // Get user's emergency contacts
-export const getUserEmergencyContacts = async (req, res) => {
+exports.getUserEmergencyContacts = async (req, res) => {
   try {
     // Validate user ID is present
     if (!req.user || !req.user.id) {
@@ -62,7 +62,7 @@ export const getUserEmergencyContacts = async (req, res) => {
 };
 
 // Add emergency contact
-export const addEmergencyContact = async (req, res) => {
+exports.addEmergencyContact = async (req, res) => {
   const { contact_name, contact_phone, contact_relationship } = req.body;
   
   // Input validation
@@ -105,7 +105,7 @@ export const addEmergencyContact = async (req, res) => {
 };
 
 // Update emergency contact
-export const updateEmergencyContact = async (req, res) => {
+exports.updateEmergencyContact = async (req, res) => {
   const { id } = req.params;
   const { contact_name, contact_phone, contact_relationship } = req.body;
   
@@ -163,7 +163,7 @@ export const updateEmergencyContact = async (req, res) => {
 };
 
 // Delete emergency contact
-export const deleteEmergencyContact = async (req, res) => {
+exports.deleteEmergencyContact = async (req, res) => {
   const { id } = req.params;
   
   // Validate ID
@@ -201,7 +201,7 @@ export const deleteEmergencyContact = async (req, res) => {
 };
 
 // Send SOS alert
-export const sendSOSAlert = async (req, res) => {
+exports.sendSOSAlert = async (req, res) => {
   const { ride_id, location, emergency_type, message } = req.body;
   
   // Input validation
@@ -292,7 +292,7 @@ export const sendSOSAlert = async (req, res) => {
 };
 
 // Request driver swap in emergency
-export const requestDriverSwap = async (req, res) => {
+exports.requestDriverSwap = async (req, res) => {
   const { ride_id, reason } = req.body;
   
   // Input validation

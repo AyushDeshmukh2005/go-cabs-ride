@@ -1,14 +1,9 @@
 
-import { pool, initializeDatabase } from '../config/database.js';
-import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import fs from 'fs';
-import mysql from 'mysql2/promise';
-
-// Get the directory name using ESM compatible approach
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const { pool, initializeDatabase } = require('../config/database');
+const dotenv = require('dotenv');
+const path = require('path');
+const fs = require('fs');
+const mysql = require('mysql2/promise');
 
 // Load environment variables from the .env file
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
@@ -94,8 +89,8 @@ const setupDatabase = async () => {
 };
 
 // Run the setup if this file is executed directly
-if (import.meta.url.startsWith('file:') && process.argv[1] === fileURLToPath(import.meta.url)) {
+if (require.main === module) {
   setupDatabase();
 }
 
-export default setupDatabase;
+module.exports = setupDatabase;
